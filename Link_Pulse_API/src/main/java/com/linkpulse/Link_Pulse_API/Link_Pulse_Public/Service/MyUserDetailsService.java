@@ -18,22 +18,26 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
+        // Fetch the user if not then throw exception
         AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findByUserEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException("Accenture User Not Found")
         );
 
+        // if fetchedAccentureUser is not null then run this logic
         if ( fetchedAccentureUser != null ){
 
             return fetchedAccentureUser;
 
         }
 
+        // If user is not present then throw exception
         throw new UsernameNotFoundException("User Not Found");
 
     }
 
     public UserDetails loadUserByUsernameAndSubdomain(String userEmail, String subDomain){
 
+        // If subdomain is equal to accenture then run this method
         if (subDomain.equals(CompanyList.accenture.name())){
 
             return accentureUserRepo.findByUserEmail(userEmail).orElseThrow(
@@ -42,6 +46,7 @@ public class MyUserDetailsService implements UserDetailsService {
 
         }
 
+        // If subdomain is not matched with our subdomains then just throw exception
         throw new UsernameNotFoundException("User Not Found");
 
     }

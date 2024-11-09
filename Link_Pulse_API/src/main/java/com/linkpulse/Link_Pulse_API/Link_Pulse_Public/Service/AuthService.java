@@ -47,21 +47,27 @@ public class AuthService {
             RegistrationRequestModel request
     ) throws PasswordsNotMatchedException, SubDomainNotFouncException {
 
+        // Check the passwords are same if yes then proceed
         if ( request.getUserPassword().equals(request.getConformUserPassword()) ){
 
+            // If the subdomain is equal to accenture then run this
             if ( request.getSubDomain().equals(CompanyList.accenture.name()) ){
 
                 AccentureUserEntity accentureUser = new AccentureUserEntity();
 
+                // Copy properties from source to destination
                 BeanUtils.copyProperties(request, accentureUser);
 
+                // Set the properties manually which are required
                 accentureUser.setUserUnlocked(false);
                 accentureUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
                 accentureUser.setRegisteredDate(new Date(System.currentTimeMillis()));
                 accentureUser.setRole(Role.TEAMMEMBER);
 
+                // After modifying the properties just save it in repo
                 accentureUserRepo.save(accentureUser);
 
+                // Run the email sending function with threads
                 new Thread(() -> {
 
                     emailSenderService.sendRegistrationEmail(accentureUser.getUserEmail());
@@ -72,12 +78,14 @@ public class AuthService {
 
             } else {
 
+                // If the subdomain is not found then throw exception
                 throw new SubDomainNotFouncException("Subdomain Not Found");
 
             }
 
         }
 
+        // If passwords are not matched then throw exception
         throw new PasswordsNotMatchedException("Passwords Not Matched Exception");
 
     }
@@ -87,8 +95,11 @@ public class AuthService {
             AuthenticationRequestModel request
     ) throws CompanyNotFoundException, UserIsLockedException {
 
+        // Convert to lowercase
+        String subdomain = request.getSubDomain().toLowerCase();
+
         // Only execute when the subdomain is accenture
-        if ( request.getSubDomain().equals(CompanyList.accenture.name()) ){
+        if ( subdomain.equals(CompanyList.accenture.name()) ){
 
             AccentureUserEntity accentureUser = accentureUserRepo.findByUserEmail(request.getUserEmail()).orElseThrow(
                     () -> new UsernameNotFoundException("User Not Found")
@@ -96,6 +107,7 @@ public class AuthService {
 
             if ( accentureUser.isUserUnlocked() ){
 
+                // Check the credentials with AuthenticationManager
                 authenticationManager.authenticate(
                         new UsernamePasswordAuthenticationToken(
                                 request.getUserEmail(),
@@ -103,10 +115,13 @@ public class AuthService {
                         )
                 );
 
+                // Generate Token for specific user
                 String jwtToken = jwtService.generateToken(accentureUser);
 
+                // Revoke all tokens for specific user which are attached
                 revokeAccentureUserTokens(accentureUser);
 
+                // Save Token After generating in DB with user
                 AccentureToken token = AccentureToken.builder()
                         .token(jwtToken)
                         .tokenType(TokenType.BEARER)
@@ -138,14 +153,17 @@ public class AuthService {
     // Revoke all used tokens in Service Layer
     private void revokeAccentureUserTokens(AccentureUserEntity user){
 
+        // Fetch and collect all tokens in List
         List<AccentureToken> validUserTokens = accentureTokenRepo.findAllValidTokensByUser(user.getId());
 
+        // If tokens are empty then stop the function
         if ( validUserTokens.isEmpty() ){
 
             return;
 
         }
 
+        // If its not empty then make the tokens useless
         validUserTokens.forEach(token -> {
 
             token.setExpired(true);
@@ -153,6 +171,7 @@ public class AuthService {
 
         });
 
+        // After performing al just save the tokens
         accentureTokenRepo.saveAll(validUserTokens);
 
     }

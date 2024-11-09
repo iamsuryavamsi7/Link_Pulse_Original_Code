@@ -7,8 +7,10 @@ import { toast, Toaster } from 'react-hot-toast'
 
 const Register = () => {
 
+    // useNavigate Hook
     const navigate = useNavigate();
 
+    // State to store credentials along with subdomain
     const [credentials, setCredentials] = useState({
         firstName: '',
         lastName: '',
@@ -18,6 +20,7 @@ const Register = () => {
         subDomain: ''
     });
 
+    // Capture and store values in credentials onChange
     const updateForm = (e) => {
 
         const value = e.target.value;
@@ -26,20 +29,24 @@ const Register = () => {
 
     }
 
+    // Registration Form Function on Submit
     const registerFormFunction = async (e) => {
 
         e.preventDefault();
 
         const subDomain = credentials.subDomain.toLowerCase();
 
+        // Check if the subdomain is present or not
         const app = APPS.find((app) => {
 
             return subDomain === app.subdomain
     
         })
 
+        // If subdomain is present then proceed;
         if ( app ) {
 
+            // Check if the passwords are matched or not
             if ( credentials.userPassword === credentials.conformUserPassword ){
 
                 if ( subDomain === 'accenture') {
@@ -136,6 +143,7 @@ const Register = () => {
 
                 // }
 
+            // If passwords are not matched then toast it
             } else {
 
                 toast.error("Passwords Not Matched", {
@@ -144,6 +152,7 @@ const Register = () => {
 
             }
 
+        // If subdomain is not found
         } else {
 
             toast.error("No Company Found", {
@@ -158,6 +167,7 @@ const Register = () => {
 
         <>
 
+            {/* Toast Container */}
             <Toaster />
 
             <Helmet>
@@ -167,6 +177,7 @@ const Register = () => {
             </Helmet>
 
         
+            {/* Registration Form */}
             <div className="flex justify-end max-sm:justify-center absolute top-0 bottom-0 left-0 right-0">
 
                 <div className="max-sm:hidden flex-1">

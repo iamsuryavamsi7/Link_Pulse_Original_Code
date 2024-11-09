@@ -23,11 +23,14 @@ public class AuthController {
     // Registration Method in Controller Layer
     @PostMapping("/register")
     public ResponseEntity<String> register(
+            // Validate the request body before proceeding
             @Valid @RequestBody RegistrationRequestModel request
     ) throws PasswordsNotMatchedException, SubDomainNotFouncException {
 
+        // Do the entire business logic in service layer
         String successMessage = authService.register(request);
 
+        // Return the response in ResponseEntity with status 200
         return ResponseEntity.ok(successMessage);
 
     }
@@ -35,11 +38,14 @@ public class AuthController {
     // Authentication Method in Controller Layer
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponseModel> authentication(
+            // Validate the request body before proceeding
             @Valid @RequestBody AuthenticationRequestModel request
     ) throws CompanyNotFoundException, UserIsLockedException {
 
+        // Do the entire business logic in service layer
         AuthenticationResponseModel response = authService.authenticate(request);
 
+        // Return the response in ResponseEntity with status 200
         return ResponseEntity.ok(response);
 
     }

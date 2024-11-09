@@ -22,7 +22,7 @@ public class JwtService {
     private String secretKey;
 
     @Value("${application.security.access_token.expiration}")
-    private String access_token_expiration;
+    private Long access_token_expiration;
 
     private SecretKey getSignInKey() {
 
@@ -50,7 +50,7 @@ public class JwtService {
                 .claim("Authorities", populateAuthorities(userDetails.getAuthorities()))
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
-                .expiration(new Date(System.currentTimeMillis()))
+                .expiration(new Date(System.currentTimeMillis() + access_token_expiration))
                 .signWith(getSignInKey())
                 .compact();
 

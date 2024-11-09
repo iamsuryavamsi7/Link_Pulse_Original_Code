@@ -6,18 +6,14 @@ import Cookies from 'js-cookie';
 import { APPS } from '../../../Utils/constants';
 import { Toaster, toast } from 'react-hot-toast';
 
-
 const Login = () => {
 
     const navigate = useNavigate();
 
-    const [orgDomain, setOrgDomain] = useState({
-        orgDomainMain: ""
-    });
-
     const [credentials, setCredentials] = useState({
-        email: "",
-        password: "",
+        userEmail: '',
+        userPassword: '',
+        subDomain: ''
     });
 
     const updateForm = (e) => {
@@ -28,19 +24,11 @@ const Login = () => {
 
     }
 
-    const updateForm1 = (e) => {
-
-        const value = e.target.value;
-
-        setOrgDomain({...credentials, [e.target.name] : value});
-
-    }
-
     const loginFormFunction = async (e) => {
 
         e.preventDefault();
 
-        const subDomain = orgDomain.orgDomainMain.toLowerCase();
+        const subDomain = credentials.subDomain.toLowerCase();
 
         const app = APPS.find((app) => {
 
@@ -54,16 +42,16 @@ const Login = () => {
 
                 try {
 
-                    const response = await axios.post('http://localhost:7777/api/v1/auth/authenticate', credentials)
+                    const response = await axios.post('http://localhost:7777/api/v1/public/authenticate', credentials)
 
                     if ( response.status === 200 ) {
 
-                        const access_token = response.data.access_token;
+                        const accenture_access_token = response.data.access_token;
 
-                        Cookies.remove('access_token');
+                        Cookies.remove('accenture_access_token');
 
                         // Store the token in a cookie
-                        Cookies.set('access_token', access_token, {
+                        Cookies.set('accenture_access_token', accenture_access_token, {
                             path: '/',
                             domain: '.linkpulse.in', 
                             expires: 1,
@@ -71,18 +59,23 @@ const Login = () => {
                             sameSite: 'Lax' // Allows sharing across subdomains
                         });
 
-                        toast.success("Passwords Not Matched", {
+                        toast.success("Login Successfull", {
                             duration: 2000
                         })
 
-                        // const redirectUrl = `http://${subDomain}.localtest.me:7778`;
+                        setCredentials({
+                            userEmail: '',
+                            userPassword: '',
+                            subDomain: ''
+                        });
 
-                        // window.open(redirectUrl, "_self");
-            
-                        // setCredentials({
-                        //     email: "",
-                        //     password: "",
-                        // });
+                        const redirectUrl = `http://${subDomain}.linkpulse.in:7778`;
+
+                        setTimeout(() => {
+
+                            window.open(redirectUrl, "_self");
+
+                        }, 2000);
 
                     }
 
@@ -161,9 +154,9 @@ const Login = () => {
                                 required
                                 className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
                                 placeholder='Org Domain'
-                                name='orgDomainMain'
-                                value={orgDomain.orgDomainMain}
-                                onChange={(e) => updateForm1(e)}
+                                name='subDomain'
+                                value={credentials.subDomain}
+                                onChange={(e) => updateForm(e)}
                             />
 
                             <input
@@ -186,8 +179,8 @@ const Login = () => {
                                 type='email'
                                 placeholder='Email'
                                 className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
-                                value={credentials.email}
-                                name='email'
+                                value={credentials.userEmail}
+                                name='userEmail'
                                 onChange={(e) => updateForm(e)}
                             />
 
@@ -205,8 +198,8 @@ const Login = () => {
                                 type='password'
                                 placeholder='Password'
                                 className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
-                                value={credentials.password}
-                                name='password'
+                                value={credentials.userPassword}
+                                name='userPassword'
                                 onChange={(e) => updateForm(e)}
                             />
 

@@ -22,18 +22,23 @@ public class LogoutService implements LogoutHandler {
             HttpServletResponse response,
             Authentication authentication) {
 
+        // Extract the authentication header where JwtToken is present
         final String authHeader = request.getHeader("Authorization");
 
+        // Extract the subdomain header where subdomain is present
         final String subdomain = request.getHeader("SubDomainHeaderCustom");
 
+        // If authHeader is not present then just dont proceed
         if ( authHeader == null || !authHeader.startsWith("Bearer") && subdomain == null ){
 
             return;
 
         }
 
+        // If authHeader is present and contains JwtToken then extract it
         final String jwtToken = authHeader.substring(7);
 
+        // If subdomain equals to accenture then run this method
         if ( subdomain.equals(CompanyList.accenture.name()) ){
 
             AccentureToken storedAccentureToken = accentureTokenRepo.findByToken(jwtToken).orElse(null);
