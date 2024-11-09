@@ -28,9 +28,9 @@ cloud:
   aws:
     region: ap-south-1
     keys:
-      access-key: AKIA3DQFZSRKGGTIENNL
-      secret-key: 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
-    bucket-name: link-pulse-testing-bucket
+      access-key: AKIA3DQFZSRKGGTIENNLXXXXXXX
+      secret-key: i5xMKtUdmJfJF6v5dMRm+JlmiKEFW+eAo34UPYJKXXXXXXX
+    bucket-name: link-pulse-testing-bucketXXXXXXX
 
 # Values for JwtService
 
