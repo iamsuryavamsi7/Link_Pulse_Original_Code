@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom'
 import axios from 'axios';
 import Cookies from 'js-cookie';
 import { APPS } from '../../../Utils/constants';
+import { Toaster, toast } from 'react-hot-toast';
 
 
 const Login = () => {
@@ -64,28 +65,24 @@ const Login = () => {
                         // Store the token in a cookie
                         Cookies.set('access_token', access_token, {
                             path: '/',
-                            domain: '.localtest.me', 
+                            domain: '.linkpulse.in', 
                             expires: 1,
                             secure: false, // Set to true if using HTTPS
                             sameSite: 'Lax' // Allows sharing across subdomains
                         });
 
-                        // setTimeout(() => {
-                            
-                        //     const tokenFromCookies = Cookies.get('access_token');
+                        toast.success("Passwords Not Matched", {
+                            duration: 2000
+                        })
 
-                        //     console.log(tokenFromCookies);  
-                        
-                        // }, 500);
+                        // const redirectUrl = `http://${subDomain}.localtest.me:7778`;
 
-                        const redirectUrl = `http://${subDomain}.localtest.me:7778`;
-
-                        window.open(redirectUrl, "_self");
+                        // window.open(redirectUrl, "_self");
             
-                        setCredentials({
-                            email: "",
-                            password: "",
-                        });
+                        // setCredentials({
+                        //     email: "",
+                        //     password: "",
+                        // });
 
                     }
 
@@ -97,7 +94,9 @@ const Login = () => {
 
                             console.log(error);
 
-                            alert("No User Found");
+                            toast.error("No User Found", {
+                                duration: 2000
+                            })
 
                         }
 
@@ -109,7 +108,9 @@ const Login = () => {
 
         } else {
 
-            alert("Check Your Company Name/Contact Admin");
+            toast.error("No Company Found", {
+                duration: 2000
+            })
 
         }
 
@@ -119,6 +120,7 @@ const Login = () => {
 
         <>
 
+            <Toaster />
     
             <Helmet>
                 <title> Login | LinkPulse </title>
@@ -231,6 +233,7 @@ const Login = () => {
 
                         <button
                             onClick={() => navigate('/register')}
+                            className='cursor-pointer hover:opacity-80 active:opacity-40'
                         >
                             
                             Register

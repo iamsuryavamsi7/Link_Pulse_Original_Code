@@ -1,9 +1,8 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.User;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.Token.AccentureToken;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
@@ -23,7 +22,7 @@ import java.util.*;
         name = "accenture_users",
         uniqueConstraints = @UniqueConstraint(
                 columnNames = {
-                        "email"
+                        "userEmail"
                 }
         )
 )
@@ -67,6 +66,14 @@ public class AccentureUserEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private Role role;
+
+    // Many projectManagers to one project
+    @ManyToOne
+    @JoinColumn(
+            name = "accenture_project_id"
+    )
+    @JsonBackReference
+    private AccentureProjects accentureProject;
 
     // Relationships to manage roles
 

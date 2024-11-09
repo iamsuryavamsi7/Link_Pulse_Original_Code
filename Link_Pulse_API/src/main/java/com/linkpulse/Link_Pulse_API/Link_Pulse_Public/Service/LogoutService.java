@@ -1,7 +1,7 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.ClientsList.CompanyList;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.Token.AccentureToken;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureToken;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureTokenRepo;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -34,7 +34,7 @@ public class LogoutService implements LogoutHandler {
 
         final String jwtToken = authHeader.substring(7);
 
-        if ( subdomain.equals(CompanyList.ACCENTURE.name()) ){
+        if ( subdomain.equals(CompanyList.accenture.name()) ){
 
             AccentureToken storedAccentureToken = accentureTokenRepo.findByToken(jwtToken).orElse(null);
 

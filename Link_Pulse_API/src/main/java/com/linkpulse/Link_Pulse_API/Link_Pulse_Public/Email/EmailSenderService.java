@@ -69,4 +69,16 @@ public class EmailSenderService {
 
     }
 
+    // Send Registration Successfully Method in Service Layer
+    @Async
+    public void sendRegistrationEmail(String email) {
+
+        sendSimpleEmail(
+                email,
+                "\n\nYou have been registered successfully. Please wait for approval from your admin\n\n",
+                "Registration Successful"
+        );
+
+    }
+
 }

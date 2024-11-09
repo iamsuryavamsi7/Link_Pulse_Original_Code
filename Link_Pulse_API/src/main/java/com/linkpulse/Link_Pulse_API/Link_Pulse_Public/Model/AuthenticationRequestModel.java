@@ -20,4 +20,7 @@ public class AuthenticationRequestModel {
     @NotBlank
     private String userPassword;
 
+    @NotBlank
+    private String subDomain;
+
 }

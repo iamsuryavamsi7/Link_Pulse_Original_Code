@@ -1,23 +1,21 @@
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import { Helmet } from 'react-helmet-async'
 import { useNavigate } from 'react-router-dom'
 import axios from 'axios'
 import { APPS } from '../../../Utils/constants'
+import { toast, Toaster } from 'react-hot-toast'
 
 const Register = () => {
 
     const navigate = useNavigate();
 
-    const [orgDomain, setOrgDomain] = useState({
-        orgDomainMain: ""
-    });
-
     const [credentials, setCredentials] = useState({
-        firstName: "",
-        lastName: "",
-        email: "",
-        password: "",
-        conformPassword: ""
+        firstName: '',
+        lastName: '',
+        userEmail: '',
+        userPassword: '',
+        conformUserPassword: '',
+        subDomain: ''
     });
 
     const updateForm = (e) => {
@@ -28,19 +26,11 @@ const Register = () => {
 
     }
 
-    const updateForm1 = (e) => {
-
-        const value = e.target.value;
-
-        setOrgDomain({...credentials, [e.target.name] : value});
-
-    }
-
     const registerFormFunction = async (e) => {
 
         e.preventDefault();
 
-        const subDomain = orgDomain.orgDomainMain.toLowerCase();
+        const subDomain = credentials.subDomain.toLowerCase();
 
         const app = APPS.find((app) => {
 
@@ -50,28 +40,35 @@ const Register = () => {
 
         if ( app ) {
 
-            if ( credentials.password === credentials.conformPassword ) {
+            if ( credentials.userPassword === credentials.conformUserPassword ){
 
                 if ( subDomain === 'accenture') {
 
                     try {
 
-                        const response = await axios.post('http://localhost:7777/api/v1/auth/register', credentials);
+                        const response = await axios.post('http://localhost:7777/api/v1/public/register', credentials);
 
                         if ( response.status === 200 ) {
 
-                            alert("User Registred")
-    
-                            navigate('/')
-    
+                            toast.success("Registration Successful", {
+                                duration: 2000
+                            })            
+
                             setCredentials({
-                                firstName: "",
-                                lastName: "",
-                                email: "",
-                                password: "",
-                                conformPassword: ""
+                                firstName: '',
+                                lastName: '',
+                                userEmail: '',
+                                userPassword: '',
+                                conformUserPassword: '',
+                                subDomain: ''
                             });
-    
+
+                            setTimeout(() => {
+
+                                navigate('/')
+
+                            }, 2000);
+
                         } 
 
                     } catch (error) {
@@ -79,69 +76,79 @@ const Register = () => {
                         console.log(error);
 
                         if ( error.response ) {
-    
+
                             if ( error.response.status === 403 ) {
-    
-                                alert("User Not Registered");
-    
+
+                                toast.error("User Not Registered", {
+                                    duration: 2000
+                                })
+
                             }
-    
+
                         }
 
                     }
 
                 }
 
-                if ( subDomain === 'wipro') {
+                // if ( subDomain === 'wipro') {
 
-                    try {
+                //     try {
 
-                        const response = await axios.post('http://localhost:7776/api/v1/auth/register', credentials);
+                //         const response = await axios.post('http://localhost:7776/api/v1/public/register', credentials);
 
-                        if ( response.status === 200 ) {
+                //         if ( response.status === 200 ) {
 
-                            alert("User Registred")
-    
-                            navigate('/')
-    
-                            setCredentials({
-                                firstName: "",
-                                lastName: "",
-                                email: "",
-                                password: "",
-                                conformPassword: ""
-                            });
-    
-                        } 
-
-                    } catch (error) {
-
-                        console.log(error);
-
-                        if ( error.response ) {
-    
-                            if ( error.response.status === 403 ) {
-    
-                                alert("User Not Registered");
-    
-                            }
-    
-                        }
-
-                    }
-
-                }
-
+                //             toast.success("Registration Successful", {
+                //                 duration: 1000
+                //             })
                 
+                //             navigate('/')
+
+                //             setCredentials({
+                //                 firstName: '',
+                //                 lastName: '',
+                //                 userEmail: '',
+                //                 userPassword: '',
+                //                 conformUserPassword: '',
+                //                 subDomain: ''
+                //             });
+
+                //         } 
+
+                //     } catch (error) {
+
+                //         console.log(error);
+
+                //         if ( error.response ) {
+
+                //             if ( error.response.status === 403 ) {
+
+                //                 toast.error("User Not Registered", {
+                //                     duration: 2000
+                //                 })                
+
+                //             }
+
+                //         }
+
+                //     }
+
+                // }
+
             } else {
-    
-                alert("Passwords Not Matched");
-    
+
+                toast.error("Passwords Not Matched", {
+                    duration: 2000
+                })
+
             }
 
         } else {
 
-            alert("Check Your Company Name/Contact Admin");
+            toast.error("No Company Found", {
+                duration: 2000
+            })
 
         }
 
@@ -150,6 +157,8 @@ const Register = () => {
     return (
 
         <>
+
+            <Toaster />
 
             <Helmet>
                 <title> Register | LinkPulse </title>
@@ -190,9 +199,9 @@ const Register = () => {
                                 required
                                 className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
                                 placeholder='Org Domain'
-                                name = 'orgDomainMain'
-                                value={orgDomain.orgDomainMain}
-                                onChange={(e) => updateForm1(e)}
+                                name = 'subDomain'
+                                value={credentials.subDomain}
+                                onChange={(e) => updateForm(e)}
                             />
 
                             <input
@@ -256,8 +265,8 @@ const Register = () => {
                                 type='email'
                                 placeholder='Email'
                                 className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
-                                value={credentials.email}
-                                name='email'
+                                value={credentials.userEmail}
+                                name='userEmail'
                                 onChange={(e) => updateForm(e)}
                             />
 
@@ -276,8 +285,8 @@ const Register = () => {
                                 type='password'
                                 placeholder='Password'
                                 className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
-                                value={credentials.password}
-                                name='password'
+                                value={credentials.userPassword}
+                                name='userPassword'
                                 onChange={(e) => updateForm(e)}
                             />
 
@@ -296,8 +305,8 @@ const Register = () => {
                                 type='password'
                                 placeholder='Conform Password'
                                 className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 mb-3 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
-                                value={credentials.conformPassword}
-                                name='conformPassword'
+                                value={credentials.conformUserPassword}
+                                name='conformUserPassword'
                                 onChange={(e) => updateForm(e)}
                             />
 
@@ -324,6 +333,7 @@ const Register = () => {
 
                         <button
                             onClick={() => navigate('/login')}
+                            className='cursor-pointer hover:opacity-80 active:opacity-40'
                         >
                             
                             Login

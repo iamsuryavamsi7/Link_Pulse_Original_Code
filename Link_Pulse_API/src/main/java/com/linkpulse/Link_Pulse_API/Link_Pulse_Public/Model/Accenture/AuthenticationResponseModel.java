@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Controller;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;

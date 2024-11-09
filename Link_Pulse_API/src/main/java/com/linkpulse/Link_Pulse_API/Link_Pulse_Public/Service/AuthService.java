@@ -1,10 +1,11 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.ClientsList.CompanyList;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Controller.AuthenticationResponseModel;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.AuthenticationResponseModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Email.EmailSenderService;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.Token.AccentureToken;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.User.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureToken;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.TokenType;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.CompanyNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.PasswordsNotMatchedException;
@@ -16,7 +17,6 @@ import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureTo
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.BeanUtils;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -42,22 +42,14 @@ public class AuthService {
 
     private final JwtService jwtService;
 
-    // Send Registration Successfully Method in Service Layer
-    @Async
-    private void sendRegistrationEmail(String email) {
-        emailSenderService.sendSimpleEmail(
-                email,
-                "\n\nYou have been registered successfully. Please wait for approval from your admin\n\n",
-                "Registration Successful"
-        );
-    }
-
     // Registration Method in Service Layer
-    public String register(RegistrationRequestModel request, String subDomain) throws PasswordsNotMatchedException, SubDomainNotFouncException {
+    public String register(
+            RegistrationRequestModel request
+    ) throws PasswordsNotMatchedException, SubDomainNotFouncException {
 
         if ( request.getUserPassword().equals(request.getConformUserPassword()) ){
 
-            if ( subDomain.equals(CompanyList.ACCENTURE.name()) ){
+            if ( request.getSubDomain().equals(CompanyList.accenture.name()) ){
 
                 AccentureUserEntity accentureUser = new AccentureUserEntity();
 
@@ -66,10 +58,15 @@ public class AuthService {
                 accentureUser.setUserUnlocked(false);
                 accentureUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
                 accentureUser.setRegisteredDate(new Date(System.currentTimeMillis()));
+                accentureUser.setRole(Role.TEAMMEMBER);
 
                 accentureUserRepo.save(accentureUser);
 
-                sendRegistrationEmail(accentureUser.getUserEmail());
+                new Thread(() -> {
+
+                    emailSenderService.sendRegistrationEmail(accentureUser.getUserEmail());
+
+                }).start();
 
                 return "User Registered Successfully";
 
@@ -87,14 +84,13 @@ public class AuthService {
 
     // Authentication Method in Service Layer
     public AuthenticationResponseModel authenticate(
-            AuthenticationRequestModel request,
-            String subDomain
+            AuthenticationRequestModel request
     ) throws CompanyNotFoundException, UserIsLockedException {
 
         // Only execute when the subdomain is accenture
-        if ( subDomain.equals(CompanyList.ACCENTURE.name()) ){
+        if ( request.getSubDomain().equals(CompanyList.accenture.name()) ){
 
-            AccentureUserEntity accentureUser = accentureUserRepo.findByEmail(request.getUserEmail()).orElseThrow(
+            AccentureUserEntity accentureUser = accentureUserRepo.findByUserEmail(request.getUserEmail()).orElseThrow(
                     () -> new UsernameNotFoundException("User Not Found")
             );
 
@@ -135,7 +131,7 @@ public class AuthService {
         }
 
         // If the subdomain not matched with our clients then throw
-        throw new CompanyNotFoundException(subDomain + " Not Found");
+        throw new CompanyNotFoundException(request.getSubDomain() + " Not Found");
 
     }
 

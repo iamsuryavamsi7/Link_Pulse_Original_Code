@@ -1,7 +1,7 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.ClientsList.CompanyList;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.User.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -18,7 +18,7 @@ public class MyUserDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findByEmail(username).orElseThrow(
+        AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findByUserEmail(username).orElseThrow(
                 () -> new UsernameNotFoundException("Accenture User Not Found")
         );
 
@@ -34,9 +34,9 @@ public class MyUserDetailsService implements UserDetailsService {
 
     public UserDetails loadUserByUsernameAndSubdomain(String userEmail, String subDomain){
 
-        if (subDomain.equals(CompanyList.ACCENTURE.name())){
+        if (subDomain.equals(CompanyList.accenture.name())){
 
-            return accentureUserRepo.findByEmail(userEmail).orElseThrow(
+            return accentureUserRepo.findByUserEmail(userEmail).orElseThrow(
                     () -> new UsernameNotFoundException("Accenture User Not Found")
             );
 

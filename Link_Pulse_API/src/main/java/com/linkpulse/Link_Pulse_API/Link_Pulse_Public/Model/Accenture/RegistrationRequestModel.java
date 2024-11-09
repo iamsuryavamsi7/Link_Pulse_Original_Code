@@ -29,4 +29,7 @@ public class RegistrationRequestModel {
     @NotBlank
     private String conformUserPassword;
 
+    @NotBlank
+    private String subDomain;
+
 }
