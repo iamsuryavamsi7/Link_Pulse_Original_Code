@@ -1,0 +1,55 @@
+# Configuration for Tomcat Server
+
+server:
+  port: 7777
+
+# Configuration for Postgresql JDBC
+
+spring:
+  datasource:
+    url: jdbc:postgresql://localhost:5432/link_pulse
+    username: postgres
+    password: 1234
+    driver-class-name: org.postgresql.Driver
+
+  # Configuration for Postgresql Hibernate
+
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+# Configuration for Amazon S3 Bucket
+
+cloud:
+  aws:
+    region: ap-south-1
+    keys:
+      access-key: AKIA3DQFZSRKGGTIENNL
+      secret-key: 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
+    bucket-name: link-pulse-testing-bucket
+
+# Values for JwtService
+
+application:
+  security:
+    secret-key: 1234567890qwertyuiopasdfghjklzxcvbnmQWERTYUIOPASDFGHJKLZXCVBNM
+    access_token:
+      expiration: 86400000
+
+  # Configuration for Spring Email
+
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: iamsuryavamsi@gmail.com
+    password: "kqsc rbye uhzk zrjd"
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
