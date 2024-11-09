@@ -1,10 +1,31 @@
-import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import './index.css'
-import App from './App.jsx'
+import { HelmetProvider } from 'react-helmet-async'
+import { BrowserRouter } from 'react-router-dom'
+import { getApp } from '../Utils/helpers'
 
-createRoot(document.getElementById('root')).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-)
+const App = () => {
+
+	const CurrentApp = getApp();
+
+	return (
+
+		<>
+		
+			<HelmetProvider>
+
+				<BrowserRouter>
+				
+					<CurrentApp />
+				
+				</BrowserRouter>
+
+			</HelmetProvider>
+
+		</>
+
+	);
+
+}
+
+createRoot(document.getElementById('root')).render(<App />)
