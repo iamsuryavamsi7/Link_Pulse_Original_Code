@@ -1,7 +1,7 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Token;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.Token;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.User.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.TokenType;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

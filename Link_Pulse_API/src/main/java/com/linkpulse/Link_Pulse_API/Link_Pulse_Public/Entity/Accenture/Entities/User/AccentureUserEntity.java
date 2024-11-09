@@ -1,9 +1,9 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.User;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Token.AccentureToken;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.Token.AccentureToken;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
