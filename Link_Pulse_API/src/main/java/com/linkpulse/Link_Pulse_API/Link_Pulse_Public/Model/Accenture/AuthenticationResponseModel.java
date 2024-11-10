@@ -15,4 +15,6 @@ public class AuthenticationResponseModel {
     @JsonProperty("access_token")
     private String accessToken;
 
+    private String userRole;
+
 }

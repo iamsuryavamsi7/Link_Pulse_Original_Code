@@ -48,6 +48,8 @@ const Login = () => {
 
                         const accenture_access_token = response.data.access_token;
 
+                        const role = response.data.userRole;
+
                         Cookies.remove('accenture_access_token');
 
                         // Store the token in a cookie
@@ -69,13 +71,17 @@ const Login = () => {
                             subDomain: ''
                         });
 
-                        const redirectUrl = `http://${subDomain}.linkpulse.in:7778`;
+                        if ( role === 'ADMIN' ){
 
-                        setTimeout(() => {
+                            const redirectUrl = `http://${subDomain}.linkpulse.in:7778/admin-dashboard`;
 
-                            window.open(redirectUrl, "_self");
+                            setTimeout(() => {
+    
+                                window.open(redirectUrl, "_self");
+    
+                            }, 2000);
 
-                        }, 2000);
+                        }
 
                     }
 

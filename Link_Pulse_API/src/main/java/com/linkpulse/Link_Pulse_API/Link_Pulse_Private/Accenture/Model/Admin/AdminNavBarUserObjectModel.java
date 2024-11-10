@@ -1,5 +1,6 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin;
 
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -20,15 +21,6 @@ public class AdminNavBarUserObjectModel {
     private String profilePicUrl;
     private String userName;
     private String designation;
-
-    @Override
-    public String toString() {
-        return "AdminNavBarUserObjectModel{" +
-                "id=" + id +
-                ", profilePicUrl='" + profilePicUrl + '\'' +
-                ", userName='" + userName + '\'' +
-                ", designation='" + designation + '\'' +
-                '}';
-    }
+    private Role role;
 
 }

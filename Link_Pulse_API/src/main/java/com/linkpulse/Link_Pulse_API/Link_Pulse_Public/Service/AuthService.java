@@ -12,7 +12,7 @@ import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.PasswordsNotMatchedE
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.SubDomainNotFouncException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.UserIsLockedException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.RegistrationRequestModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.AuthenticationRequestModel;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.AuthenticationRequestModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureTokenRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import lombok.RequiredArgsConstructor;
@@ -135,6 +135,7 @@ public class AuthService {
 
                 return AuthenticationResponseModel.builder()
                         .accessToken(jwtToken)
+                        .userRole(accentureUser.getRole().name())
                         .build();
 
             }else {

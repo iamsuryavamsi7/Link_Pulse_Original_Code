@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;

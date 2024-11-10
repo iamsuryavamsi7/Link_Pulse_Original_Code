@@ -6,6 +6,7 @@ import Notifications from './Notifications/Notifications'
 import Cookies from 'js-cookie'
 import NavBarDropDown from './NavBarDropDown'
 import axios from 'axios'
+import { Toaster, toast } from 'react-hot-toast'
 
 const NavBar = () => {
 
@@ -23,6 +24,40 @@ const NavBar = () => {
     const [notificationActive, setNotificationActive] = useState(false);
 
     const [profileViewTurnedOn, setProfileViewTurnedOn] = useState(false);
+
+    // Profile pic source
+    const [imageSrc, setImageSrc] = useState(null);
+
+    const fetchImage = async () => {
+
+        setImageSrc(null);
+
+        try{
+
+            const response = await axios.get(`http://localhost:7777/api/v1/admin/downloadUserProfilePictureByName`, {
+                responseType: 'blob',
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                } 
+            });
+
+            if ( response.status === 200 ){
+
+                const imageBlob = URL.createObjectURL(response.data);
+
+                setImageSrc(imageBlob);
+
+            }
+
+        }catch(error){
+
+            handleFetchError(error);
+
+            setImageSrc(null);
+
+        }
+
+    }
 
     const FaArrowRightToBracketFunction = () => {
 
@@ -135,7 +170,7 @@ const NavBar = () => {
     }
 
 
-// UseEffect Hook
+    // UseEffect Hook
 
     useEffect(() => {
 
@@ -146,6 +181,8 @@ const NavBar = () => {
         } else {
 
             fetchUserObject();
+
+            fetchImage();
 
             if ( notificationCount === 0 ) {
 
@@ -165,18 +202,18 @@ const NavBar = () => {
 
     return (
 
-        <div className="fixed left-0 right-0 top-0 h-[60px] bg-[#66B2FF] flex items-center justify-between">
+        <div className="fixed z-50 left-0 right-0 top-0 h-[60px] bg-[#66B2FF] flex items-center justify-between">
 
-            <div className="shrink-0">
+            <Toaster />
+
+            <div className="shrink-0 flex space-x-20">
 
                 <img 
                     src='/Secured_Images/Accenture_Images/Accenture_Logo.webp'
                     className='h-[30px] w-auto mx-10'
                 />
 
-            </div>
-
-            <div className="shrink-0 relative">
+                <div className="shrink-0 relative">
 
                 <input 
                     type='text'
@@ -186,6 +223,8 @@ const NavBar = () => {
                 <IoIosSearch 
                     className='absolute top-0 left-0 h-8 p-1 w-auto'
                 />
+
+            </div>
 
             </div>
 
@@ -253,16 +292,25 @@ const NavBar = () => {
 
                 <div className=""> 
 
-                    <img 
+                    {imageSrc && imageSrc.length > 0 ? (
+                        <img 
+                        src={imageSrc}
+                        className='h-[38px] w-auto object-cover rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer'
+                        onClick={profileFunction}
+                        />
+                    ) : (
+                        <img 
                         src='/Secured_Images/Accenture_Images/emptyuser.jpeg'
                         className='h-[38px] w-auto object-cover rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer'
                         onClick={profileFunction}
                     />
+                    )}
 
                     {profileViewTurnedOn && (
 
                         <NavBarDropDown 
                             userObject = {userObject}
+                            imageSrc = {imageSrc}
                         />
 
                     )}
@@ -277,4 +325,4 @@ const NavBar = () => {
 
 }
 
-export default NavBar
+export default NavBar;

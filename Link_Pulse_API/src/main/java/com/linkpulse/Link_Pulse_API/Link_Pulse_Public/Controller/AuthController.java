@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Controller.Accenture;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Controller;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.CompanyNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.PasswordsNotMatchedException;
@@ -6,7 +6,7 @@ import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.SubDomainNotFouncExc
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Error.UserIsLockedException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.AuthenticationResponseModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.RegistrationRequestModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.AuthenticationRequestModel;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.AuthenticationRequestModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

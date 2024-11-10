@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config.Accenture;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.LogoutService;

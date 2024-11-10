@@ -6,7 +6,7 @@ const Notifications = () => {
 
         <>
         
-            <div className="absolute w-[300px] h-auto bg-white text-black top-[55px] right-0 rounded-b-xl overflow-hidden">
+            <div className="absolute w-[300px] h-auto bg-white text-black top-[55px] right-0 rounded-b-xl overflow-hidden shadow-xl">
 
                 <div className="text-2xl font-semibold mx-5 my-2">
 
