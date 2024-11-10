@@ -1,5 +1,6 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config.Accenture;
 
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.LogoutService;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.MyUserDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -50,6 +51,8 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers("api/v1/public/**")
                                 .permitAll()
+                                .requestMatchers("/api/v1/admin/**")
+                                .hasRole(Role.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
                 )
@@ -60,7 +63,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter.class)
                 .logout(
                         logout -> logout
-                                .logoutUrl("/api/v1/logout")
+                                .logoutUrl("/api/v1/accenture/logout")
                                 .addLogoutHandler(logoutService)
                                 .logoutSuccessHandler(
                                         ((request, response, authentication) -> SecurityContextHolder.clearContext())

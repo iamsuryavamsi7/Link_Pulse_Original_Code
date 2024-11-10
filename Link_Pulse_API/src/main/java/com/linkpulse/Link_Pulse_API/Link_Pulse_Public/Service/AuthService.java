@@ -3,7 +3,7 @@ package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.ClientsList.CompanyList;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Model.Accenture.AuthenticationResponseModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Email.EmailSenderService;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Email.Accenture.EmailSenderService;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureToken;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.TokenType;
@@ -63,6 +63,7 @@ public class AuthService {
                 accentureUser.setUserPassword(passwordEncoder.encode(request.getUserPassword()));
                 accentureUser.setRegisteredDate(new Date(System.currentTimeMillis()));
                 accentureUser.setRole(Role.TEAMMEMBER);
+                accentureUser.setSubDomain(CompanyList.accenture.name());
 
                 // After modifying the properties just save it in repo
                 accentureUserRepo.save(accentureUser);
@@ -116,7 +117,7 @@ public class AuthService {
                 );
 
                 // Generate Token for specific user
-                String jwtToken = jwtService.generateToken(accentureUser);
+                String jwtToken = jwtService.generateToken(accentureUser, accentureUser.getSubDomain());
 
                 // Revoke all tokens for specific user which are attached
                 revokeAccentureUserTokens(accentureUser);

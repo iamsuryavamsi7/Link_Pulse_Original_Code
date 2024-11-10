@@ -57,6 +57,9 @@ public class AccentureUserEntity implements UserDetails {
 
     private Date registeredDate;
 
+    @NotBlank
+    private String subDomain;
+
     @OneToMany(
             mappedBy = "accentureUser",
             cascade = CascadeType.ALL

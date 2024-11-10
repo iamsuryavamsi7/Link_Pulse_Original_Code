@@ -44,10 +44,11 @@ public class JwtService {
 
     }
 
-    public String generateToken(UserDetails userDetails){
+    public String generateToken(UserDetails userDetails, String subdomain){
 
         return Jwts.builder()
                 .claim("Authorities", populateAuthorities(userDetails.getAuthorities()))
+                .claim("subDomain", subdomain)
                 .subject(userDetails.getUsername())
                 .issuedAt(new Date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + access_token_expiration))
@@ -87,6 +88,12 @@ public class JwtService {
         Date expiration = extractClaim(jwtToken, Claims::getExpiration);
 
         return userEmail.equals(userDetails.getUsername()) && expiration.after(new Date(System.currentTimeMillis()));
+
+    }
+
+    public String extractSubDomain(String jwtToken){
+
+        return extractClaim(jwtToken, claims -> claims.get("subDomain", String.class));
 
     }
 

@@ -1,40 +1,38 @@
-import Custom404NotFoundPage from "../src/Link_Pulse_Error/Custom404NotFoundPage";
-import { APPS } from "./constants";
+import { APPS } from "./constants"
 
-// Function to render the router conditionally
 export const getApp = () => {
-
-    // Uncomment if needed to see the name
+    
     // console.log(window.location.hostname);
 
-    // Get extracted subdomain with Java Script window global object
     const subdomain = getSubdomain(window.location.hostname);
 
-    // Iterate every elementin constants file to get the correct router
+    // console.log(subdomain);
+
     const mainApp = APPS.find((app) => {
 
         return app.main;
 
     })
 
-    // If there is no subdomain present then return main in APPS which is true
     if ( subdomain === "") {
 
         return mainApp.app
 
     }
 
-    // If the subdomain equals to out APPS subdomain then return it
     const app = APPS.find((app) => {
 
         return subdomain === app.subdomain
 
     })
 
-    // If subdomain is not found then return 404 Not Found Page
     if ( !app ) {
 
-        return <Custom404NotFoundPage />;
+        return mainApp.app;
+
+    } else {
+
+        return app.app;
 
     }
 
@@ -57,4 +55,23 @@ export const getSubdomain = (hostname) => {
     return locationParts.slice(0, sliceTill).join('.');
 }
 
+
+// const getSubdomain = (hostname) => { // connekt.in ['connekt', 'in'] admin.localhost:7778/login linkpulse.in:8080/login
+//     // Split the hostname into parts
+//     const locationParts = hostname.split('.'); // Change this line to use '.' as the separator
+
+//     let sliceTill = -2;
+
+//     // Check for localhost
+//     const isLocalHost = locationParts.includes("localhost"); // Use includes to check for 'localhost'
+
+//     if (isLocalHost) {
+        
+//         sliceTill = -1;
+
+//     }
+
+//     // Join the parts, ensuring to account for different cases
+//     return locationParts.slice(0, sliceTill).join('.');
+// }
 

@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Config.Accenture;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureTokenRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
@@ -37,11 +37,8 @@ public class JwtFilterChain extends OncePerRequestFilter {
         // Get the header value for Jwt Token with name "Authorization"
         final String authHeader = request.getHeader("Authorization");
 
-        // Get the header value for Subdomain with name "SubDomainHeaderCustom"
-        final String subDomain = request.getHeader("SubDomainHeaderCustom");
-
         // If the jwt token and subdomain is not available then just stop proceeding
-        if (authHeader == null || !authHeader.startsWith("Bearer ") || subDomain == null ){
+        if (authHeader == null || !authHeader.startsWith("Bearer ")){
 
             filterChain.doFilter(request, response);
 
@@ -51,6 +48,9 @@ public class JwtFilterChain extends OncePerRequestFilter {
 
         // Now jwt token is available so we are extracting it and storing it in jwtToken variable
         final String jwtToken = authHeader.substring(7);
+
+        // Now we are extracting subDomain and then storing in subDomain variable with the help of extractSubDomain method from JwtService Class
+        final String subDomain = jwtService.extractSubDomain(jwtToken);
 
         // Now we are extracting userEmail and then storing in userEmail variable with the help of extractUserName method from JwtService Class
         final String userEmail = jwtService.extractUserName(jwtToken);

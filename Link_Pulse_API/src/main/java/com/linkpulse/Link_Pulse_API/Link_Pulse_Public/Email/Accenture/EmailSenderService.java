@@ -1,4 +1,4 @@
-package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Email;
+package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Email.Accenture;
 
 import jakarta.mail.MessagingException;
 import jakarta.mail.internet.MimeMessage;

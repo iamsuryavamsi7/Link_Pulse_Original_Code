@@ -1,7 +1,6 @@
 import { AccentureRouter, AppRouter } from "../src/AppRouter";
 
-// Rendering Components
-const APPS = [
+export const APPS = [
     {
 
         subdomain: "www",
@@ -17,5 +16,3 @@ const APPS = [
 
     }
 ]
-
-export { APPS };

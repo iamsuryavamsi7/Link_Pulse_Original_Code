@@ -3,6 +3,8 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./Link_Pulse_Components/Public_Components/Login";
 import Register from "./Link_Pulse_Components/Public_Components/Register";
+import Accenture_Layout from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Accenture_Layout";
+import Dashboard from "./Link_Pulse_Components/Secured_Components/Accenture_Components/MainComponents/Admin/Dashboard";
 
 // Public Pages Router
 function AppRouter() {
@@ -32,7 +34,15 @@ function AccentureRouter() {
 	
 		<>
 
-			
+			<Routes>
+
+				<Route element={<Accenture_Layout />}>
+
+					<Route path = "/" element = {<Dashboard />} />
+
+				</Route>
+
+			</Routes>
 
 		</>
 
