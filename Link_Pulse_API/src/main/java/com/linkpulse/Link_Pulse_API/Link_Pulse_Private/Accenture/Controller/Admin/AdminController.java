@@ -3,7 +3,9 @@ package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Adm
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin.AdminService;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureProjects;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -26,6 +28,8 @@ public class AdminController {
     private final JwtService jwtService;
 
     private final AccentureUserRepo accentureUserRepo;
+
+    private final AccentureProjectsRepo accentureProjectsRepo;
 
     @GetMapping("/fetchUserObject")
     public ResponseEntity<AdminNavBarUserObjectModel> fetchUserObject(
@@ -167,6 +171,17 @@ public class AdminController {
         String successMessage = adminService.deleteEmployeeById(userId);
 
         return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/checkIfProjectManagerIsAlreadyAssigned/{projectId}")
+    public ResponseEntity<Boolean> checkIfProjectManagerIsAlreadyAssigned(
+            @PathVariable("projectId") Long projectId
+    ) throws AccentureProjectNotFoundException {
+
+        Boolean booleanValue = adminService.checkIfProjectManagerIsAlreadyAssigned(projectId);
+
+        return ResponseEntity.ok(booleanValue);
 
     }
 

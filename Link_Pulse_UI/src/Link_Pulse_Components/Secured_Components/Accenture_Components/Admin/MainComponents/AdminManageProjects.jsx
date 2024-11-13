@@ -5,6 +5,7 @@ import { CiEdit } from 'react-icons/ci';
 import { MdAddBox, MdDeleteForever } from 'react-icons/md';
 import { Toaster, toast } from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const AdminManageProjects = () => {
 
@@ -519,7 +520,7 @@ const AdminManageProjects = () => {
 
                 <div className="pl-[300px] pt-[100px] mr-5">
 
-                    <div className="text-2xl font-serif">
+                    <div className="text-2xl font-serif tracking-wider">
 
                         Manage Projects
 
@@ -531,21 +532,23 @@ const AdminManageProjects = () => {
 
                         <div className="space-y-3 block w-full">
 
-                            <div className="text-xl font-serif">
+                            <div className="text-xl font-serif tracking-wider">
 
                             Current Projects
 
                             </div>
 
                             <table
-                                className='w-full bg-gray-800 text-white rounded-t-lg'
+                                className='w-full bg-gray-200 text-gray-600 rounded-t-lg'
                             >
 
                                 <thead
                                     className='text-left leading-[50px]'
                                 >
 
-                                    <tr>
+                                    <tr
+                                        className=''
+                                    >
 
                                         <th
                                             className='px-5'
@@ -602,7 +605,7 @@ const AdminManageProjects = () => {
                                         
                                             <tr
                                                 key={project.id}
-                                                className='bg-white text-black shadow-lg leading-[50px]'
+                                                className='bg-white leading-[50px] text-gray-700'
                                             >
                                         
                                                 <td
@@ -664,25 +667,25 @@ const AdminManageProjects = () => {
 
                             {projectData && projectData.length > 0 && (
 
-                                <div className="space-x-5 text-center mx-10 mt-5 text-white">
+                                <div className="space-x-5 text-center text-gray-600">
                                     
                                     <button 
                                         onClick={prevPage} 
-                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                    >Previous</button>
+                                        className='bg-gray-200 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60 mt-14'
+                                    ><FaArrowLeft /></button>
                                     
-                                    <span className='bg-gray-800 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
+                                    <span className='bg-gray-200 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
                                     
                                     <button 
                                         onClick={nextPage}
-                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                    >Next</button>
+                                        className='bg-gray-200 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
+                                    ><FaArrowRight /></button>
                                 
                                 </div>
 
                             )}
 
-                            <div className="inline-flex items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer"
+                            <div className="inline-flex text-gray-600 items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer"
                                 onClick={addProjectButtonFunction}
                             >
 
@@ -709,11 +712,11 @@ const AdminManageProjects = () => {
 
                                     <div className="flex items-center space-x-5 transition-all">
 
-                                        <label  className='text-sm font-semibold'>Project Name</label> <br />
+                                        <label  className='text-sm text-gray-600  font-semibold'>Project Name</label> <br />
 
                                         <input 
                                             type='text'
-                                            className='focus:outline-none bg-gray-100 border-sky-500 border-2 rounded-md px-5 leading-[20px]'
+                                            className='focus:outline-none border-gray-500 border-[1px] rounded-sm px-2 leading-6'
                                             placeholder='Enter Project Name'
                                             name='projectName'
                                             value={projectDetails.projectName}
@@ -724,11 +727,11 @@ const AdminManageProjects = () => {
 
                                     <div className="flex items-center space-x-5 transition-all">
 
-                                        <label className='text-sm font-semibold'>Project Description</label> <br />
+                                        <label className='text-sm text-gray-600 font-semibold'>Project Description</label> <br />
 
                                         <input 
                                         type='text'
-                                        className='focus:outline-none  bg-gray-100 border-sky-500 border-2 rounded-md px-5 leading-[0px]'
+                                        className='focus:outline-none border-gray-500 border-[1px] rounded-sm px-2 leading-6'
                                         placeholder='Enter Project Description'
                                         name='projectDescription'
                                         value={projectDetails.projectDescription}
@@ -740,7 +743,7 @@ const AdminManageProjects = () => {
                                     <div className="">
 
                                         <button
-                                            className='bg-green-400 px-3 leading-[32px] rounded-lg text-sm font-semibold'
+                                            className='bg-gray-200 text-gray-600 hover:opacity-80 active:opacity-60 px-3 leading-[32px] rounded-lg text-sm font-semibold'
                                             onClick={addProjectFunction}
                                         >
 

@@ -252,19 +252,27 @@ public class AdminService {
 
             fetchedAccentureUser.getProjectManagerProjects().add(fetchedAccentureProject);
 
+            fetchedAccentureProject.setProjectManager(fetchedAccentureUser);
+
         } else if ( requestModel.getRole().equals(Role.TEAMLEAD) ){
 
             fetchedAccentureUser.setTeamLeadProject(fetchedAccentureProject);
 
+            fetchedAccentureProject.getTeamLead().add(fetchedAccentureUser);
+
         }else if ( requestModel.getRole().equals(Role.TEAMMEMBER)){
 
             fetchedAccentureUser.setTeamMemberProject(fetchedAccentureProject);
+
+            fetchedAccentureProject.getTeamMembers().add(fetchedAccentureUser);
 
         }
 
         fetchedAccentureUser.setUserUnlocked(true);
 
         accentureUserRepo.save(fetchedAccentureUser);
+
+        accentureProjectsRepo.save(fetchedAccentureProject);
 
         return "User Updated";
 
@@ -275,6 +283,16 @@ public class AdminService {
         accentureUserRepo.deleteById(userId);
 
         return "User Deleted";
+
+    }
+
+    public Boolean checkIfProjectManagerIsAlreadyAssigned(Long projectId) throws AccentureProjectNotFoundException {
+
+        AccentureProjects fetchedProject = accentureProjectsRepo.findById(projectId).orElseThrow(
+                () -> new AccentureProjectNotFoundException("Accenture Project Not Found")
+        );
+
+        return fetchedProject.getProjectManager() != null;
 
     }
 

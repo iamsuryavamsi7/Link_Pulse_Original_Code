@@ -6,6 +6,7 @@ import { SiTicktick } from 'react-icons/si';
 import { MdOutlineDeleteForever } from 'react-icons/md';
 import { RiRefreshFill } from 'react-icons/ri';
 import { Toaster, toast } from 'react-hot-toast';
+import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 
 const AdminEmployeeApproval = () => {
     
@@ -221,12 +222,41 @@ const AdminEmployeeApproval = () => {
 
     }
 
+    // State to check project manager is already available
+    const [projectManagerAvailable, setProjectManagerAvailable] = useState(false);
+
+    const [projectError, setProjectError] = useState(true);
+
     // Function for storing projectId value in state
-    const projectIdOnChangeFunction = (e) => {
+    const projectIdOnChangeFunction = async (e) => {
 
         const projectId = e.target.value;
 
-        console.log(`Current projectId : ${projectId}`);
+        try{
+
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/checkIfProjectManagerIsAlreadyAssigned/${projectId}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            });
+
+            if ( response.status === 200 ){
+
+                const responseData = response.data;
+
+                setProjectError(false);
+
+                setProjectManagerAvailable(responseData);
+
+            }
+            
+        }catch(error){
+
+            setProjectError(true);
+
+            handleFetchError(error);
+
+        }
 
         setEmployeeDetails(
             {...employeeDetails, projectId: projectId}
@@ -295,7 +325,7 @@ const AdminEmployeeApproval = () => {
 
         } else {
 
-            toast.error('Full all fields', {
+            toast.error('Fill all fields', {
                 duration: 2000
             })
 
@@ -394,24 +424,40 @@ const AdminEmployeeApproval = () => {
                 <>
                     <div className="pl-[265px] pt-[120px] w-full">
 
-                        <div className="block relative mt-5 mx-10">
+                        <div className="mx-10 text-2xl font-serif tracking-wider">
 
-                            <div className="flex items-center absolute top-[-50px] right-10 font-semibold text-white bg-black px-2 py-1 rounded-lg space-x-2 cursor-pointer"
-                                onClick={refreshButtonFunction}
-                            >
+                            Employee Approvals
 
-                                <span>Refresh</span>
+                        </div>
 
-                                <RiRefreshFill 
-                                    className={`text-2xl ${refreshAnimationState}`} 
-                            />
+                        <div className="block mx-10 bg-white p-5 mt-5">
+
+                           <div className="w-full flex justify-between">
+
+                            <div className="text-xl font-serif tracking-wide">
+
+                                New Employee Request
 
                             </div>
 
-                            <table className='bg-gray-300 w-full text-left'>
+                            <div className="inline-flex mr-2 mb-5 font-semibold text-gray-600 bg-gray-200 px-2 py-1 rounded-lg space-x-2 cursor-pointer"
+                                    onClick={refreshButtonFunction}
+                                >
+
+                                    <span>Refresh</span>
+
+                                    <RiRefreshFill 
+                                        className={`text-2xl ${refreshAnimationState}`} 
+                                    />
+
+                                </div>
+
+                           </div>
+
+                            <table className='bg-gray-200 rounded-t-xl w-full text-left'>
                                 <thead>
                                     <tr
-                                        className='leading-10'
+                                        className='leading-[50px] text-gray-600'
                                     >
                                         <th
                                             className='px-10'
@@ -431,7 +477,7 @@ const AdminEmployeeApproval = () => {
                                         return (
                                             <tr 
                                                 key={lockedUser.id}
-                                                className='leading-10'
+                                                className='leading-[50px] bg-white text-gray-700'
                                             >
                                                 <td
                                                     className='px-10'
@@ -441,7 +487,7 @@ const AdminEmployeeApproval = () => {
                                                 <td>
                                                     
                                                     <select
-                                                        className='focus:outline-none bg-white'
+                                                        className='focus:outline-none bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
                                                         onChange={projectIdOnChangeFunction}  
                                                     >
                                                         <option>Select Project</option>
@@ -460,23 +506,38 @@ const AdminEmployeeApproval = () => {
                                                 </td>
                                                 <td>
                                                     <select
-                                                        className='focus:outline-none bg-white'
+                                                        className='focus:outline-none bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
                                                         onChange={selectRoleOnChangeFunction}
                                                     >
                                                         <option>Select Role</option>
-                                                        <option value={`PROJECTMANAGER`}>Project Manager</option>
-                                                        <option value={`TEAMLEAD`}>Team Lead</option>
-                                                        <option value={`TEAMMEMBER`}>Team Member</option>
+                                                        
+                                                        {!projectManagerAvailable && !projectError && (
+
+                                                            <option value={`PROJECTMANAGER`}>Project Manager</option>
+
+                                                        )}
+
+                                                        {!projectError && (
+
+                                                            <>
+
+                                                                <option value={`TEAMLEAD`}>Team Lead</option>
+                                                                <option value={`TEAMMEMBER`}>Team Member</option>
+
+                                                            </>
+
+                                                        )}
+                                                        
                                                     </select>
                                                 </td>
                                                 <td>
                                                     <input
                                                         type="text"
-                                                        className="leading-5 rounded-sm focus:outline-none"
+                                                        className="leading-7 rounded-sm focus:outline-none border-[1px] border-gray-500 px-2"
                                                         onChange={designationOnChangeFunction}
                                                     />
                                                 </td>
-                                                <td className="flex items-center space-x-3">
+                                                <td className="flex items-center space-x-3 pt-3">
                                                     <SiTicktick
                                                         className="text-xl cursor-pointer hover:opacity-50 active:opacity-80"
                                                         onClick={() => acceptEmployeeById(lockedUser.id)}
@@ -493,7 +554,7 @@ const AdminEmployeeApproval = () => {
                                     {lockedUsers && lockedUsers.length === 0 && (
 
                                         <tr
-                                            className='leading-10 bg-white shadow-lg'
+                                            className='leading-[50px] bg-white text-gray-600'
                                         >
 
                                             <td
@@ -514,19 +575,19 @@ const AdminEmployeeApproval = () => {
 
                             {lockedUsers && lockedUsers.length > 0 && (
 
-                                <div className="space-x-5 text-center mx-10 mt-5 text-white">
+                                <div className="space-x-5 text-center mx-10 mt-5 text-gray-600">
                                     
                                     <button 
                                         onClick={prevPage} 
-                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                    >Previous</button>
+                                        className='bg-gray-200 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60 mt-14'
+                                    ><FaArrowLeft /></button>
                                     
-                                    <span className='bg-gray-800 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
-                                    
+                                    <span className='bg-gray-200 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
+                                     
                                     <button 
                                         onClick={nextPage}
-                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                    >Next</button>
+                                        className='bg-gray-200 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
+                                    ><FaArrowRight /></button>
                                 
                                 </div>
 

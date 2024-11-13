@@ -72,10 +72,11 @@ public class AccentureUserEntity implements UserDetails {
 
     // Project Manager - one project manager for multiple projects
     @OneToMany(
-            mappedBy = "projectManager"
+            mappedBy = "projectManager",
+            cascade = CascadeType.ALL
     )
     @JsonManagedReference("multipleProjectsForOneProjectManager")
-    private List<AccentureProjects> projectManagerProjects;
+    private List<AccentureProjects> projectManagerProjects = new ArrayList<>();
 
     // Team Lead - multiple team leads for one project
     @ManyToOne

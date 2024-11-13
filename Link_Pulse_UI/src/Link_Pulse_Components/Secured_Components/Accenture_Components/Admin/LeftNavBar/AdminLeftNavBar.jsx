@@ -80,6 +80,15 @@ const AdminLeftNavBar = () => {
 
     }
 
+    // State to store the style of admin employee approval page
+    const [adminEmployeeApproval, setAdminEmployeeApproval] = useState(``);
+
+    // State to store the style of admin Dashboard page
+    const [adminDashBoard, setAdminDashBoard] = useState(``);
+
+    // State to store the style of admin Settings page
+    const [adminSettings, setAdminSettings] = useState(``);
+
     useEffect(() => {
 
         if ( !access_token ){
@@ -92,11 +101,43 @@ const AdminLeftNavBar = () => {
 
         }
 
+        const pathName = window.location.pathname;
+
+        if ( pathName === `/admin-employee-approvals` ){
+
+            setAdminEmployeeApproval(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+
+        } else {
+
+            setAdminEmployeeApproval(``);
+
+        }
+
+        if ( pathName === `/admin-dashboard` ){
+
+            setAdminDashBoard(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+
+        } else {
+
+            setAdminDashBoard(``);
+
+        }
+
+        if ( pathName === `/admin-manage-projects` ){
+
+            setAdminSettings(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+
+        } else {
+
+            setAdminSettings(``);
+
+        }
+
     });
 
     return (
 
-        <div className="bg-[#F0F2F5] top-[80px] left-0 bottom-0 fixed text-center z-50 border-r-[1px] border-gray-400 flex flex-col">
+        <div className="bg-[#F0F2F5] bg-[] top-[80px] left-0 bottom-0 fixed text-center z-50 flex flex-col">
 
             <Toaster/>
             
@@ -104,7 +145,7 @@ const AdminLeftNavBar = () => {
 
                     <>
                   
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] text-gray-800 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminDashBoard}`}
                             onClick={() => navigate('/admin-dashboard')} 
                         >
 
@@ -124,7 +165,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] text-gray-800 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/time-sheets')}
                         >
 
@@ -144,7 +185,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] text-gray-800 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminEmployeeApproval}`}
                             onClick={() => navigate('/admin-employee-approvals')}
                         >
 
@@ -164,7 +205,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/insights')}
                         >
 
@@ -184,7 +225,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/attendence-management')}
                         >
 
@@ -204,7 +245,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/leave-request')}
                         >
 
@@ -224,7 +265,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/reports')}
                         >
 
@@ -244,7 +285,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1`}
                             onClick={() => navigate('/teams')}
                         >
 
@@ -268,7 +309,7 @@ const AdminLeftNavBar = () => {
                         <div className="relative mt-auto mb-5">
 
                             <div 
-                                className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1 bottom-4 w-full`}
+                                className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 bottom-4 w-full ${adminSettings}`}
                                 onClick={() => {
 
                                     if ( settingsDragDown ){
@@ -302,7 +343,7 @@ const AdminLeftNavBar = () => {
 
                             {settingsDragDown && (
 
-                                <div className="absolute top-[-60px] left-3 cursor-pointer bg-gray-800 duration-300 text-white rounded-lg overflow-hidden settingsDropDown z-50"
+                                <div className="absolute hover:opacity-80 active:opacity-60 top-[-60px] left-3 cursor-pointer bg-gray-800 duration-300 text-white rounded-lg overflow-hidden settingsDropDown z-50"
                                 onClick={() =>{
 
                                     navigate('/admin-manage-projects')

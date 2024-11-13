@@ -86,7 +86,7 @@ const Register = () => {
 
                             if ( error.response.status === 403 ) {
 
-                                toast.error("User Not Registered", {
+                                toast.error("Email Already Taken", {
                                     duration: 2000
                                 })
 
@@ -97,51 +97,6 @@ const Register = () => {
                     }
 
                 }
-
-                // if ( subDomain === 'wipro') {
-
-                //     try {
-
-                //         const response = await axios.post('http://localhost:7776/api/v1/public/register', credentials);
-
-                //         if ( response.status === 200 ) {
-
-                //             toast.success("Registration Successful", {
-                //                 duration: 1000
-                //             })
-                
-                //             navigate('/')
-
-                //             setCredentials({
-                //                 firstName: '',
-                //                 lastName: '',
-                //                 userEmail: '',
-                //                 userPassword: '',
-                //                 conformUserPassword: '',
-                //                 subDomain: ''
-                //             });
-
-                //         } 
-
-                //     } catch (error) {
-
-                //         console.log(error);
-
-                //         if ( error.response ) {
-
-                //             if ( error.response.status === 403 ) {
-
-                //                 toast.error("User Not Registered", {
-                //                     duration: 2000
-                //                 })                
-
-                //             }
-
-                //         }
-
-                //     }
-
-                // }
 
             // If passwords are not matched then toast it
             } else {
