@@ -1,5 +1,6 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -39,13 +40,28 @@ public class AccentureProjects {
     @NotNull
     private boolean projectCompleted;
 
-    // One Project to many projectManagers
-    @OneToMany(
-            mappedBy = "accentureProject",
-            cascade = CascadeType.ALL,
-            fetch = FetchType.EAGER
+    // Project - one project for one project manager
+    @OneToOne
+    @JoinColumn(
+            name = "project_manager_id"
     )
-    @JsonManagedReference
-    private List<AccentureUserEntity> projectManagers = new ArrayList<>();
+    @JsonBackReference("projectManagerOnlyHaveOneProject")
+    private AccentureUserEntity projectManager;
+
+    // Project - one project for multiple team leads
+    @OneToMany(
+            mappedBy = "teamLeadProject",
+            cascade = CascadeType.ALL
+    )
+    @JsonManagedReference("projectCanHaveMultipleTeamLeads")
+    private List<AccentureUserEntity> teamLead = new ArrayList<>();
+
+    // Project - one project for multiple team members
+    @OneToMany(
+            mappedBy = "teamMemberProject",
+            cascade = CascadeType.ALL
+    )
+    @JsonManagedReference("projectCanHaveMultipleTeamMembers")
+    private List<AccentureUserEntity> teamMembers = new ArrayList<>();
 
 }

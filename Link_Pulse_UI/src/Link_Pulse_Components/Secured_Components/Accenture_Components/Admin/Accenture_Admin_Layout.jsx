@@ -1,16 +1,16 @@
 import React from 'react'
 import NavBar from './NavBar/NavBar'
-import LeftNavBar from './LeftNavBar/LeftNavBar'
 import { Outlet } from 'react-router-dom'
+import AdminLeftNavBar from './LeftNavBar/AdminLeftNavBar'
 
-const Accenture_Layout = () => {
+const Accenture_Admin_Layout = () => {
 
     return (
 
         <>
         
             <NavBar />
-            <LeftNavBar />
+            <AdminLeftNavBar />
             <div className="">
 
                 <Outlet />
@@ -23,4 +23,4 @@ const Accenture_Layout = () => {
 
 }
 
-export default Accenture_Layout
+export default Accenture_Admin_Layout

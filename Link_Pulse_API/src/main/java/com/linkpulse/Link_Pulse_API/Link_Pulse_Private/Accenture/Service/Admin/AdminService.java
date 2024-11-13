@@ -1,10 +1,10 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin;
 
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AddProjectAdminRequestModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AdminNavBarUserObjectModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.FetchedProjectsDataResponseModel;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureProjects;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
@@ -114,6 +114,8 @@ public class AdminService {
         int start = pageNumber * pageSize;
         int end = Math.min(start + pageSize, fetchedProjects.size());
 
+        System.out.println("Page Number :- " + pageNumber + " and Page Size :- " + pageSize);
+
         // If start index is beyond the size of the list, return an empty list
         if (start >= fetchedProjects.size()) {
             return new ArrayList<>(); // Return an empty list if no data for the requested page
@@ -135,6 +137,140 @@ public class AdminService {
         accentureProjectsRepo.save(project);
 
         return "Project Saved";
+
+    }
+
+    public String deleteProjectById(Long id) {
+
+        accentureProjectsRepo.deleteById(id);
+
+        return "Project Deleted";
+
+    }
+
+    public GetProjectByIdModelResponse getProjectById(Long projectId) throws AccentureProjectNotFoundException {
+
+        return accentureProjectsRepo.findById(projectId)
+                .map(project -> {
+
+                    GetProjectByIdModelResponse project1 = new GetProjectByIdModelResponse();
+
+                    BeanUtils.copyProperties(project, project1);
+
+                    return project1;
+
+                })
+                .orElseThrow(
+                        () -> new AccentureProjectNotFoundException("Accenture Project Not Found")
+                );
+
+    }
+
+    public String updateProjectById(Long projectId, UpdateProjectByIdRequestModel requestModel) throws AccentureProjectNotFoundException {
+
+        Optional<AccentureProjects> fetchedAccentureProject = accentureProjectsRepo.findById(projectId);
+
+        if ( fetchedAccentureProject.isPresent() ){
+
+            AccentureProjects accentureProject = fetchedAccentureProject.get();
+
+            BeanUtils.copyProperties(requestModel, accentureProject);
+
+            accentureProjectsRepo.save(accentureProject);
+
+            return "Project Updated";
+
+        }
+
+        throw new AccentureProjectNotFoundException("Accenture Project Not Found");
+
+    }
+
+    public List<LockedUsersResponseModel> fetchLockedUsers(int pageNumber, int pageSize) {
+
+        List<LockedUsersResponseModel> fetchedUsers = accentureUserRepo.findAll()
+                .stream()
+                .filter(accentureUser -> !accentureUser.isUserUnlocked())
+                .sorted(Comparator.comparing(AccentureUserEntity::getRegisteredDate).reversed())
+                .map(accentureUser1 -> {
+
+                    LockedUsersResponseModel accentureUser2 = new LockedUsersResponseModel();
+
+                    accentureUser2.setId(accentureUser1.getId());
+                    accentureUser2.setFullName(accentureUser1.getFirstName() + " " + accentureUser1.getLastName());
+                    accentureUser2.setEmail(accentureUser1.getUserEmail());
+
+                    return accentureUser2;
+
+                })
+                .toList();
+
+
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, fetchedUsers.size());
+
+        System.out.println("Page Number :- " + pageNumber + " and Page Size :- " + pageSize);
+
+        // If start index is beyond the size of the list, return an empty list
+        if (start >= fetchedUsers.size()) {
+            return new ArrayList<>(); // Return an empty list if no data for the requested page
+        }
+
+        return fetchedUsers.subList(start, end);
+
+    }
+
+    public List<FetchAllProjectsResponseModel> fetchAllProjects() {
+
+        return accentureProjectsRepo.findAll()
+                .stream()
+                .filter(accentureProjects -> !accentureProjects.isProjectCompleted() )
+                .sorted(Comparator.comparing(AccentureProjects::getProjectCreatedOn).reversed())
+                .map(project -> {
+
+                    FetchAllProjectsResponseModel projectsResponseModel = new FetchAllProjectsResponseModel();
+
+                    BeanUtils.copyProperties(project, projectsResponseModel);
+
+                    return projectsResponseModel;
+
+                })
+                .toList();
+
+    }
+
+    public String acceptEmployeeById(Long userId, AcceptEmployeeByIdRequestModel requestModel) throws AccentureProjectNotFoundException {
+
+        AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findById(userId).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found")
+        );
+
+        AccentureProjects fetchedAccentureProject = accentureProjectsRepo.findById(requestModel.getProjectId()).orElseThrow(
+                () -> new AccentureProjectNotFoundException("Accenture Project Now Found")
+        );
+
+        fetchedAccentureUser.setRole(requestModel.getRole());
+        fetchedAccentureUser.setDesignation(requestModel.getDesignation());
+
+        if ( requestModel.getRole().equals(Role.PROJECTMANAGER) ){
+
+            fetchedAccentureUser.setProjectManagerProject(fetchedAccentureProject);
+
+        } else if ( requestModel.getRole().equals(Role.TEAMLEAD) ){
+
+            fetchedAccentureUser.setTeamLeadProject(fetchedAccentureProject);
+
+        }else if ( requestModel.getRole().equals(Role.TEAMMEMBER)){
+
+            fetchedAccentureUser.setTeamMemberProject(fetchedAccentureProject);
+
+        }
+
+        fetchedAccentureUser.setUserUnlocked(true);
+
+        accentureUserRepo.save(fetchedAccentureUser);
+
+        return "User Updated";
 
     }
 

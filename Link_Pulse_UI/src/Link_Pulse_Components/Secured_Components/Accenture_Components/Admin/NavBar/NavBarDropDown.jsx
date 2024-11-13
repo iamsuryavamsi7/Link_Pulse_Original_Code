@@ -9,6 +9,36 @@ import {toast, Toaster} from 'react-hot-toast'
 
 const NavBarDropDown = ({userObject, imageSrc}) => {
 
+    // Jwt Token
+    const access_token = Cookies.get('accenture_access_token');
+
+    // Common function to handle error
+    const handleFetchError = (error) => {
+
+        if ( error.response ) {
+
+            if ( error.response.status === 403 ){
+
+                console.log(error.response);
+
+                toast.error('Something went wrong', {
+                    duration: 2000
+                });
+
+            } else {
+
+                console.log(error);
+
+            }
+
+        } else {
+
+            console.error('Error fetching data', error);
+
+        }
+
+    }
+
     // Logout Function to make the user tokens expire
     const logoutFunction = async () => {
 

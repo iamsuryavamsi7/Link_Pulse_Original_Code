@@ -7,8 +7,9 @@ import { BsFillFileBarGraphFill } from 'react-icons/bs';
 import { FaTeamspeak, FaUmbrellaBeach } from 'react-icons/fa6';
 import { IoSettings } from 'react-icons/io5';
 import { useNavigate } from 'react-router-dom';
+import { Toaster, toast } from 'react-hot-toast';
 
-const LeftNavBar = () => {
+const AdminLeftNavBar = () => {
 
     // JWT_TOKEN
     const access_token = Cookies.get('accenture_access_token');
@@ -97,6 +98,8 @@ const LeftNavBar = () => {
 
         <div className="bg-[#F0F2F5] top-[80px] left-0 bottom-0 fixed text-center z-50 border-r-[1px] border-gray-400 flex flex-col">
 
+            <Toaster/>
+            
             {role === admin && (
 
                     <>
@@ -142,7 +145,7 @@ const LeftNavBar = () => {
                         </div>
 
                         <div className={`hover:bg-gray-300 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-lg navBar1`}
-                            onClick={() => navigate('/employee-approval')}
+                            onClick={() => navigate('/admin-employee-approvals')}
                         >
 
                             <div className="">
@@ -302,7 +305,7 @@ const LeftNavBar = () => {
                                 <div className="absolute top-[-60px] left-3 cursor-pointer bg-gray-800 duration-300 text-white rounded-lg overflow-hidden settingsDropDown z-50"
                                 onClick={() =>{
 
-                                    navigate('/manage-projects')
+                                    navigate('/admin-manage-projects')
 
                                     setSettingsDragDown(false);
 
@@ -335,4 +338,4 @@ const LeftNavBar = () => {
 
 }
 
-export default LeftNavBar
+export default AdminLeftNavBar

@@ -4,8 +4,9 @@ import axios from 'axios';
 import { CiEdit } from 'react-icons/ci';
 import { MdAddBox, MdDeleteForever } from 'react-icons/md';
 import { Toaster, toast } from 'react-hot-toast';
+import { Helmet } from 'react-helmet-async';
 
-const ManageProjects = () => {
+const AdminManageProjects = () => {
 
     // JWT_TOKEN
     const access_token = Cookies.get('accenture_access_token');
@@ -24,28 +25,85 @@ const ManageProjects = () => {
 
     const [deleteButtonVisible, setDeleteButtonVisible] = useState({});
 
+    // default page number
     const [page, setPage] = useState(0); // Track the current page
     
+    // Default no of items for page
     const pageSize = 10; 
 
     const [isLastPage, setIsLastPage] = useState(false); // 
 
-    const nextPage = async () => {
+    // Function for checking projects are available for next page
+    const checkIfProjectsAreAvailable = async (pageNumber) => {
 
-        if ( !isLastPage ) {
+        const page = pageNumber;
 
-            const hasPage = await fetchProjectsData(page + 1);
+        try{
 
-            if ( hasPage ){
+            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetchProjectsData/${page}/${pageSize}`, {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
 
-                setPage((prevPage) => prevPage + 1);
+            if ( response.status === 200 ){
+
+                const responseData = response.data;
+
+                if ( responseData.length > 0 ){
+
+                    return true;
+
+                }else {
+
+                    return false;
+
+                }
 
             }
+
+        }catch(error){
+
+            return false;
 
         }
 
     }
 
+    // Function for next page
+    const nextPage = async () => {
+
+        if ( !isLastPage ){
+
+            const pageNumber = page + 1;
+
+            const response = await checkIfProjectsAreAvailable(pageNumber);
+
+            if ( response ){
+
+                setPage((prevPage) => prevPage + 1);
+
+            } else {
+
+                setIsLastPage(true);
+
+                toast.error('Its the last page', {
+                    duration: 2000
+                })
+
+            }
+
+        } else {
+
+            toast.error('Its the last page', {
+                duration: 2000
+            })
+
+        }
+
+    }
+
+    // Function for previous page
     const prevPage = () => {
 
         if ( page > 0 ) {
@@ -54,37 +112,49 @@ const ManageProjects = () => {
 
             setIsLastPage(false);
 
-        } 
+        } else {
+
+            toast.error('Its the first page', {
+                duration: 2000
+            })
+
+        }
 
     }
 
+    // State to store add projects form details
     const [projectDetails, setProjectDetails] = useState({
         projectName: "",
         projectDescription: ""
     });
 
+    // State to store edit projects form details
     const [formData, setFormData] = useState({
         id: "",
         projectName: "",
-        projectDesc: "",
+        projectDescription: "",
         projectCreatedOn: "",
     });
 
+    // State to activate and deactive edit mode
     const [editMode, setEditMode] = useState(false);
 
+    // Functions to enable edit tooltip visibility
     const enableEditVisible = (id) => {
         setEditButtonVisible((prev) => ({ ...prev, [id]: true }));
     };
 
+    // Functions to disable edit tooltip visibility
     const disableEditVisible = (id) => {
         setEditButtonVisible((prev) => ({ ...prev, [id]: false }));
     };
 
-    // Functions to enable/disable delete tooltip visibility
+    // Functions to enable delete tooltip visibility
     const enableDeleteVisible = (id) => {
         setDeleteButtonVisible((prev) => ({ ...prev, [id]: true }));
     };
 
+    // Functions to disable delete tooltip visibility
     const disableDeleteVisible = (id) => {
         setDeleteButtonVisible((prev) => ({ ...prev, [id]: false }));
     };
@@ -163,7 +233,7 @@ const ManageProjects = () => {
         
     }
 
-    const handleOnChangeFunction = (e) => {
+    const handleOnChangeFunction = (e) => { 
 
         e.preventDefault();
 
@@ -173,9 +243,8 @@ const ManageProjects = () => {
 
     }
 
+    // Function to store the data in state onChange for edit mode details
     const handleOnChangeFunction2 = (e) => {
-
-        e.preventDefault();
 
         const value = e.target.value;
 
@@ -183,13 +252,14 @@ const ManageProjects = () => {
 
     }
 
-    const deleteButtonFunctionManage = async (e, id) => {
+    // Function to delete project by id
+    const projectDeleteFunction = async (id) => {
 
-        e.preventDefault();
+        const projectId = id;
 
         try{
 
-            const response = await axios.delete('http://localhost:7777/api/v1/projects/deleteProject/' + id, {
+            const response = await axios.delete(`http://localhost:7777/api/v1/admin/deleteProjectById/${projectId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -197,7 +267,9 @@ const ManageProjects = () => {
 
             if ( response.status === 200 ){
 
-                console.log(response.data);
+                toast.success('Project Deleted Successfully', {
+                    duration: 1000
+                });
 
                 fetchProjectsData();
 
@@ -215,13 +287,14 @@ const ManageProjects = () => {
 
     }
 
-    const editButtonManageProject = async (e, id) => {
+    // Function to fetch project data by id then enabling edit mode
+    const editButtonManageProject = async (id) => {
 
-        e.preventDefault();
+        const projectId = id;
 
         try{
 
-            const response = await axios.get('http://localhost:7777/api/v1/projects/getProjectById/' + id, {
+            const response = await axios.get(`http://localhost:7777/api/v1/admin/getProjectById/${projectId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -229,23 +302,17 @@ const ManageProjects = () => {
 
             if ( response.status === 200 ){
 
+                const responseData = response.data;
+
                 setEditMode(true);
 
-                setFormData(response.data);
+                setFormData(responseData);
 
             }
 
         }catch(error){
 
-            if ( error.response ){
-
-                if ( error.response.status = 200 ){
-
-                    console.log(error.response.data);
-
-                }
-
-            }
+            handleFetchError(error);
 
         }
 
@@ -259,15 +326,20 @@ const ManageProjects = () => {
 
     }
 
-    const formSubmitFunction = async (e) => {
+    // Function to update project data in DB
+    const editProjectFunction = async (e) => {
 
         e.preventDefault();
 
+        const projectId = formData.id;
+        const projectName = formData.projectName
+        const projectDescription = formData.projectDescription
+
         try{
 
-            const response = await axios.put('http://localhost:7777/api/v1/projects/updateProject/' + formData.id, {
-                projectName: formData.projectName,
-                projectDescription: formData.projectDesc
+            const response = await axios.put(`http://localhost:7777/api/v1/admin/updateProject/${projectId}`, {
+                projectName: projectName,
+                projectDescription: projectDescription
             }, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
@@ -276,7 +348,9 @@ const ManageProjects = () => {
 
             if ( response.status === 200 ){
 
-                console.log("Updated Form Data")
+                toast.success('Project Updated', {
+                    duration: 1000
+                })
 
                 fetchProjectsData();
 
@@ -286,19 +360,7 @@ const ManageProjects = () => {
 
         }catch(error){
 
-            if ( error.response ){
-
-                if ( error.response.status === 403 ){
-
-                    console.log(error.response.data);
-
-                } else {
-
-                    console.log(error.message);
-
-                }
-
-            }
+            handleFetchError(error);
 
         }
 
@@ -330,6 +392,7 @@ const ManageProjects = () => {
 
     }
 
+    // Function to fetch userObject for role
     const setRoleFunction = async () => {
 
         try{
@@ -343,8 +406,6 @@ const ManageProjects = () => {
             if ( response.status === 200 ){
 
                 const userData = response.data;
-
-                console.log(userData);
 
                 setRole(userData.role);
 
@@ -362,6 +423,10 @@ const ManageProjects = () => {
 
         setRoleFunction();
 
+    });
+
+    useEffect(() => {
+
         fetchProjectsData();
 
     }, [page]);
@@ -371,6 +436,13 @@ const ManageProjects = () => {
         <>
 
             <Toaster />
+
+            <Helmet>
+                <title> Admin Manage Projects | Accenture </title>
+                <meta name="description" content={`Link Pulse Dashboard where users perform their activities`} />
+                <meta name="keywords" content="User Profile, Project Management, John Doe, Employee Details, Urlify, Employee Approval Urlify" />
+                <meta property="og:type" content="website" />
+            </Helmet>
 
             {role === admin && (
 
@@ -384,7 +456,7 @@ const ManageProjects = () => {
 
                             <form
                                 className='space-y-5'
-                                onSubmit={(e) => formSubmitFunction(e)}
+                                onSubmit={(e) => editProjectFunction(e)}
                             >
 
                                 <div className="text-xl">
@@ -415,8 +487,8 @@ const ManageProjects = () => {
                                     <input 
                                         type='text'
                                         className='focus:outline-none border-2 border-sky-300 rounded-lg px-3 leading-8 mt-2'
-                                        name='projectDesc'
-                                        value={formData.projectDesc}
+                                        name='projectDescription'
+                                        value={formData.projectDescription}
                                         onChange={(e) => handleOnChangeFunction2(e)}
                                     />
 
@@ -538,45 +610,12 @@ const ManageProjects = () => {
 
                                                 <td className='px-5'>{project.projectName}</td>
                                         
-                                                <td>{project.projectDescription}</td>
+                                                <td
+                                                    className='w-[300px] flex overflow-hidden'
+                                                >{project.projectDescription}</td>
                                         
                                                 <td className='px-5'>{new Date(project.projectCreatedOn).toDateString()}</td>
                                         
-                                                {/* <td className='px-5 space-x-5 flex items-center'>
-                                        
-                                                    <span className="mt-2 relative z-0">
-                                                        <CiEdit
-                                                            className='text-[35px] z-0 bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                            onMouseEnter={() => enableEditVisible(project.id)}
-                                                            onMouseLeave={() => disableEditVisible(project.id)}
-                                                            onClick={(e) => editButtonManageProject(e, project.id)}
-                                                        />
-                                                        
-                                                        {editButtonVisible[project.id] && (
-                                                            <span className="absolute z-0 left-[-30px] top-1 text-xs rounded-md px-1 py-1">
-                                                                Edit
-                                                            </span>
-                                                        )}
-                                        
-                                                    </span>
-
-                                                    <span className="mt-2 relative z-0">
-                                                        <MdDeleteForever 
-                                                            className='text-[35px] z-0 bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                            onMouseEnter={() => enableDeleteVisible(project.id)}
-                                                            onMouseLeave={() => disableDeleteVisible(project.id)}
-                                                            onClick={(e) => deleteButtonFunctionManage(e, project.id)}
-                                                        />
-
-                                                        {deleteButtonVisible[project.id] && (
-                                                            <span className="absolute z-0 right-[-50px] top-1 text-xs rounded-md px-1 py-1">
-                                                                Delete
-                                                            </span>
-                                                        )}
-                                                    </span>
-                                        
-                                                </td> */}
-
                                                 <td className='px-5 space-x-5 flex items-center'>
                                         
                                                     <span className="mt-2 relative">
@@ -584,7 +623,7 @@ const ManageProjects = () => {
                                                             className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
                                                             onMouseEnter={() => enableEditVisible(project.id)}
                                                             onMouseLeave={() => disableEditVisible(project.id)}
-                                                            onClick={(e) => editButtonManageProject(e, project.id)}
+                                                            onClick={() => editButtonManageProject(project.id)}
                                                         />
                                                         
                                                         {editButtonVisible[project.id] && (
@@ -600,7 +639,7 @@ const ManageProjects = () => {
                                                             className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
                                                             onMouseEnter={() => enableDeleteVisible(project.id)}
                                                             onMouseLeave={() => disableDeleteVisible(project.id)}
-                                                            onClick={(e) => deleteButtonFunctionManage(e, project.id)}
+                                                            onClick={() => projectDeleteFunction(project.id)}
                                                         />
 
                                                         {deleteButtonVisible[project.id] && (
@@ -622,22 +661,25 @@ const ManageProjects = () => {
 
                             </table>
 
-                            <div className="space-x-5 text-center mx-10 mt-5 text-white">
+                            {projectData && projectData.length > 0 && (
+
+                                <div className="space-x-5 text-center mx-10 mt-5 text-white">
+                                    
+                                    <button 
+                                        onClick={prevPage} 
+                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
+                                    >Previous</button>
+                                    
+                                    <span className='bg-gray-800 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
+                                    
+                                    <button 
+                                        onClick={nextPage}
+                                        className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
+                                    >Next</button>
                                 
-                                <button 
-                                    onClick={prevPage} 
-                                    disabled={page === 0}
-                                    className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                >Previous</button>
-                                
-                                <span className='bg-gray-800 px-2 py-2 text-sm rounded-md'>Page {page + 1}</span>
-                                
-                                <button 
-                                    onClick={nextPage}
-                                    className='bg-gray-800 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
-                                >Next</button>
-                            
-                            </div>
+                                </div>
+
+                            )}
 
                             <div className="inline-flex items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer"
                                 onClick={addProjectButtonFunction}
@@ -729,4 +771,4 @@ const ManageProjects = () => {
 
 }
 
-export default ManageProjects
+export default AdminManageProjects

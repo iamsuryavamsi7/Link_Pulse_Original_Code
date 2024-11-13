@@ -3,9 +3,11 @@
 import { Route, Routes } from "react-router-dom";
 import Login from "./Link_Pulse_Components/Public_Components/Login";
 import Register from "./Link_Pulse_Components/Public_Components/Register";
-import Accenture_Layout from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/Accenture_Layout";
-import Dashboard from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/Dashboard";
-import ManageProjects from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/ManageProjects";
+import Accenture_Admin_Layout from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/Accenture_Admin_Layout";
+import AdminDashboard from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminDashboard";
+import AdminManageProjects from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageProjects";
+import AdminEmployeeApproval from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminEmployeeApproval";
+import Accenture404NotFoundPage from "./Link_Pulse_Components/Secured_Components/Accenture_Components/404NotFound/Accenture404NotFoundPage";
 
 // Public Pages Router
 function AppRouter() {
@@ -37,12 +39,17 @@ function AccentureRouter() {
 
 			<Routes>
 
-				<Route element={<Accenture_Layout />}>
+				{/* Accenture Admin Routes */}
+				<Route element={<Accenture_Admin_Layout />}>
 
-					<Route path = "/admin-dashboard" element = {<Dashboard />} />
-					<Route path="/manage-projects" element= {<ManageProjects />}/>
+					<Route path = "/admin-dashboard" element = {<AdminDashboard />} />
+					<Route path="/admin-manage-projects" element= {<AdminManageProjects />}/>
+					<Route path="/admin-employee-approvals" element= {<AdminEmployeeApproval />}/>
 
 				</Route>
+
+				{/* 404 Not Found Page */}
+				<Route path="*" element={<Accenture404NotFoundPage />}/>
 
 			</Routes>
 

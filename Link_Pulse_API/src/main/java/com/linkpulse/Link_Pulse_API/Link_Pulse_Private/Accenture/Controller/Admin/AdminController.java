@@ -1,8 +1,7 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Admin;
 
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AddProjectAdminRequestModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AdminNavBarUserObjectModel;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.FetchedProjectsDataResponseModel;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin.AdminService;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
@@ -90,6 +89,73 @@ public class AdminController {
         String message = adminService.addProject(addProjectAdminRequestModel);
 
         return ResponseEntity.ok(message);
+
+    }
+
+    @DeleteMapping("/deleteProjectById/{projectId}")
+    public ResponseEntity<String> deleteProjectById(
+            @PathVariable("projectId") Long id
+    ){
+
+        String successMessage = adminService.deleteProjectById(id);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/getProjectById/{projectId}")
+    public ResponseEntity<GetProjectByIdModelResponse> getProjectById(
+            @PathVariable("projectId") Long projectId
+    ) throws AccentureProjectNotFoundException {
+
+        GetProjectByIdModelResponse fetchedProjectDetails = adminService.getProjectById(projectId);
+
+        return ResponseEntity.ok(fetchedProjectDetails);
+
+    }
+
+    @PutMapping("/updateProject/{projectId}")
+    public ResponseEntity<String> updateProjectById(
+            @PathVariable("projectId") Long projectId,
+            @Valid @RequestBody UpdateProjectByIdRequestModel requestModel
+    ) throws AccentureProjectNotFoundException {
+
+        String successMessage = adminService.updateProjectById(projectId, requestModel);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/fetch-locked-users/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<LockedUsersResponseModel>> fetchLockedUsers(
+            @PathVariable("pageNumber") int pageNumber,
+            @PathVariable("pageSize") int pageSize
+    ){
+
+        List<LockedUsersResponseModel> fetchedLockedUsers = adminService.fetchLockedUsers(pageNumber, pageSize);
+
+        return ResponseEntity.ok(fetchedLockedUsers);
+
+    }
+
+    @GetMapping("/fetch-all-projects")
+    public ResponseEntity<List<FetchAllProjectsResponseModel>> fetchAllProjects(){
+
+        List<FetchAllProjectsResponseModel> fetchedProjects = adminService.fetchAllProjects();
+
+        return ResponseEntity.ok(fetchedProjects);
+
+    }
+
+    @PostMapping("/acceptEmployeeById/{userId}")
+    public ResponseEntity<String> acceptEmployeeById(
+            @PathVariable("userId") Long userId,
+            @Valid @RequestBody AcceptEmployeeByIdRequestModel requestModel
+    ) throws AccentureProjectNotFoundException {
+
+        String successMessage = adminService.acceptEmployeeById(userId, requestModel);
+
+        return ResponseEntity.ok(successMessage);
 
     }
 
