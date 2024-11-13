@@ -44,7 +44,7 @@ const NavBarDropDown = ({userObject, imageSrc}) => {
 
         try{
 
-            const response = await axios.post('http://localhost:7777/api/v1/accenture/logout', {
+            const response = await axios.post('http://localhost:7777/api/v1/logout', {}, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`   
                 }

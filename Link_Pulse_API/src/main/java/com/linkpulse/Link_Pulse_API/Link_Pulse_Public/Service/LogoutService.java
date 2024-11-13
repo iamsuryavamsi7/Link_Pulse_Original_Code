@@ -16,6 +16,8 @@ public class LogoutService implements LogoutHandler {
 
     private final AccentureTokenRepo accentureTokenRepo;
 
+    private final JwtService jwtService;
+
     @Override
     public void logout(
             HttpServletRequest request,
@@ -25,11 +27,8 @@ public class LogoutService implements LogoutHandler {
         // Extract the authentication header where JwtToken is present
         final String authHeader = request.getHeader("Authorization");
 
-        // Extract the subdomain header where subdomain is present
-        final String subdomain = request.getHeader("SubDomainHeaderCustom");
-
-        // If authHeader is not present then just dont proceed
-        if ( authHeader == null || !authHeader.startsWith("Bearer") && subdomain == null ){
+        // If authHeader is not present then just don't proceed
+        if ( authHeader == null || !authHeader.startsWith("Bearer") ){
 
             return;
 
@@ -37,6 +36,10 @@ public class LogoutService implements LogoutHandler {
 
         // If authHeader is present and contains JwtToken then extract it
         final String jwtToken = authHeader.substring(7);
+
+        final String subdomain = jwtService.extractSubDomain(jwtToken);
+
+        System.out.println(subdomain);
 
         // If subdomain equals to accenture then run this method
         if ( subdomain.equals(CompanyList.accenture.name()) ){

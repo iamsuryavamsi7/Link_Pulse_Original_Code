@@ -31,6 +31,7 @@ const AdminManageProjects = () => {
     // Default no of items for page
     const pageSize = 10; 
 
+    // Checking its the last page or not
     const [isLastPage, setIsLastPage] = useState(false); // 
 
     // Function for checking projects are available for next page
@@ -40,7 +41,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetchProjectsData/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchProjectsData/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -204,7 +205,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.post('http://localhost:7777/api/v1/admin/addProject', projectDetails, {
+            const response = await axios.post('http://localhost:7777/api/v1/accenture-admin/addProject', projectDetails, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -259,7 +260,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.delete(`http://localhost:7777/api/v1/admin/deleteProjectById/${projectId}`, {
+            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteProjectById/${projectId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -294,7 +295,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/getProjectById/${projectId}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/getProjectById/${projectId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -337,7 +338,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.put(`http://localhost:7777/api/v1/admin/updateProject/${projectId}`, {
+            const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateProject/${projectId}`, {
                 projectName: projectName,
                 projectDescription: projectDescription
             }, {
@@ -370,7 +371,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetchProjectsData/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchProjectsData/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -397,7 +398,7 @@ const AdminManageProjects = () => {
 
         try{
 
-            const response = await axios.get('http://localhost:7777/api/v1/admin/fetchUserObject', {
+            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchUserObject', {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }

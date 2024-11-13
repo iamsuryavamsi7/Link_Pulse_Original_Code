@@ -51,7 +51,7 @@ public class SecurityConfig {
                         request -> request
                                 .requestMatchers("api/v1/public/**")
                                 .permitAll()
-                                .requestMatchers("/api/v1/admin/**")
+                                .requestMatchers("/api/v1/accenture-admin/**")
                                 .hasRole(Role.ADMIN.name())
                                 .anyRequest()
                                 .authenticated()
@@ -63,7 +63,7 @@ public class SecurityConfig {
                 .addFilterBefore(jwtFilterChain, UsernamePasswordAuthenticationFilter.class)
                 .logout(
                         logout -> logout
-                                .logoutUrl("/api/v1/accenture/logout")
+                                .logoutUrl("/api/v1/logout")
                                 .addLogoutHandler(logoutService)
                                 .logoutSuccessHandler(
                                         ((request, response, authentication) -> SecurityContextHolder.clearContext())

@@ -26,7 +26,7 @@ const AdminEmployeeApproval = () => {
         
         try {
         
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetchUserObject`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchUserObject`, {
         
                 headers: { 'Authorization': `Bearer ${access_token}` }
         
@@ -56,7 +56,7 @@ const AdminEmployeeApproval = () => {
 
         try {
         
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetch-locked-users/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetch-locked-users/${page}/${pageSize}`, {
         
                 headers: { 'Authorization': `Bearer ${access_token}` }
         
@@ -86,7 +86,7 @@ const AdminEmployeeApproval = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetch-all-projects`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetch-all-projects`, {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }
@@ -124,7 +124,7 @@ const AdminEmployeeApproval = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/fetch-locked-users/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetch-locked-users/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -271,7 +271,7 @@ const AdminEmployeeApproval = () => {
 
             try{
 
-                const response = await axios.post(`http://localhost:7777/api/v1/admin/acceptEmployeeById/${userId}`, employeeDetails, {
+                const response = await axios.post(`http://localhost:7777/api/v1/accenture-admin/acceptEmployeeById/${userId}`, employeeDetails, {
                     headers: {
                         Authorization: `Bearer ${access_token}`
                     }
@@ -308,7 +308,29 @@ const AdminEmployeeApproval = () => {
  
         const userId = id;
 
-        console.log(userId);
+        try{
+
+            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteEmployeeById/${userId}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            });
+
+            if ( response.status === 200 ){
+
+                fetchLockedUsers();
+
+                toast.success('Employee Deleted', {
+                    duration: 1000
+                })
+
+            }
+
+        }catch(error){
+
+            handleFetchError(error);
+
+        }
 
     }
 

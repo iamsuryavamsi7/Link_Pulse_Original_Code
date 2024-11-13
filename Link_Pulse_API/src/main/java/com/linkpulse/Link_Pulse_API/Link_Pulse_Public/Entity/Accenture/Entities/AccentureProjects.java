@@ -40,12 +40,12 @@ public class AccentureProjects {
     @NotNull
     private boolean projectCompleted;
 
-    // Project - one project for one project manager
-    @OneToOne
+    // Project - multiple projects for one project manager
+    @ManyToOne
     @JoinColumn(
             name = "project_manager_id"
     )
-    @JsonBackReference("projectManagerOnlyHaveOneProject")
+    @JsonBackReference("multipleProjectsForOneProjectManager")
     private AccentureUserEntity projectManager;
 
     // Project - one project for multiple team leads

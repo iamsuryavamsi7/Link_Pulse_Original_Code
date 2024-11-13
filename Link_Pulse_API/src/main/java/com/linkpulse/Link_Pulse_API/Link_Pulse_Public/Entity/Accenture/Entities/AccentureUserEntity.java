@@ -70,12 +70,12 @@ public class AccentureUserEntity implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    // Project Manager - project manager for one project
-    @OneToOne(
+    // Project Manager - one project manager for multiple projects
+    @OneToMany(
             mappedBy = "projectManager"
     )
-    @JsonManagedReference("projectManagerOnlyHaveOneProject")
-    private AccentureProjects projectManagerProject;
+    @JsonManagedReference("multipleProjectsForOneProjectManager")
+    private List<AccentureProjects> projectManagerProjects;
 
     // Team Lead - multiple team leads for one project
     @ManyToOne

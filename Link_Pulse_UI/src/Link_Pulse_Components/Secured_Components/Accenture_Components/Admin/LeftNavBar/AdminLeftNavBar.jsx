@@ -58,7 +58,7 @@ const AdminLeftNavBar = () => {
 
         try{
 
-            const response = await axios.get('http://localhost:7777/api/v1/admin/fetchUserObject', {
+            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchUserObject', {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }

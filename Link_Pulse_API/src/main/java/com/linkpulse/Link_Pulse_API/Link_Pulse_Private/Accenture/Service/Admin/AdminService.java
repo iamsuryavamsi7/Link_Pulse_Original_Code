@@ -114,8 +114,6 @@ public class AdminService {
         int start = pageNumber * pageSize;
         int end = Math.min(start + pageSize, fetchedProjects.size());
 
-        System.out.println("Page Number :- " + pageNumber + " and Page Size :- " + pageSize);
-
         // If start index is beyond the size of the list, return an empty list
         if (start >= fetchedProjects.size()) {
             return new ArrayList<>(); // Return an empty list if no data for the requested page
@@ -209,8 +207,6 @@ public class AdminService {
         int start = pageNumber * pageSize;
         int end = Math.min(start + pageSize, fetchedUsers.size());
 
-        System.out.println("Page Number :- " + pageNumber + " and Page Size :- " + pageSize);
-
         // If start index is beyond the size of the list, return an empty list
         if (start >= fetchedUsers.size()) {
             return new ArrayList<>(); // Return an empty list if no data for the requested page
@@ -254,7 +250,7 @@ public class AdminService {
 
         if ( requestModel.getRole().equals(Role.PROJECTMANAGER) ){
 
-            fetchedAccentureUser.setProjectManagerProject(fetchedAccentureProject);
+            fetchedAccentureUser.getProjectManagerProjects().add(fetchedAccentureProject);
 
         } else if ( requestModel.getRole().equals(Role.TEAMLEAD) ){
 
@@ -271,6 +267,14 @@ public class AdminService {
         accentureUserRepo.save(fetchedAccentureUser);
 
         return "User Updated";
+
+    }
+
+    public String deleteEmployeeById(Long userId) {
+
+        accentureUserRepo.deleteById(userId);
+
+        return "User Deleted";
 
     }
 

@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/v1/admin")
+@RequestMapping("/api/v1/accenture-admin")
 @RequiredArgsConstructor
 public class AdminController {
 
@@ -154,6 +154,17 @@ public class AdminController {
     ) throws AccentureProjectNotFoundException {
 
         String successMessage = adminService.acceptEmployeeById(userId, requestModel);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @DeleteMapping("/deleteEmployeeById/{userId}")
+    public ResponseEntity<String> deleteEmployeeById(
+            @PathVariable("userId") Long userId
+    ){
+
+        String successMessage = adminService.deleteEmployeeById(userId);
 
         return ResponseEntity.ok(successMessage);
 

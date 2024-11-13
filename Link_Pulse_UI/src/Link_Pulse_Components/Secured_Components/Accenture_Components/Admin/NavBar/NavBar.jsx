@@ -34,7 +34,7 @@ const NavBar = () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/admin/downloadUserProfilePictureByName`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/downloadUserProfilePictureByName`, {
                 responseType: 'blob',
                 headers: {
                     'Authorization': `Bearer ${access_token}`
@@ -147,7 +147,7 @@ const NavBar = () => {
 
         try{
 
-            const response = await axios.get('http://localhost:7777/api/v1/admin/fetchUserObject', {
+            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchUserObject', {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }
