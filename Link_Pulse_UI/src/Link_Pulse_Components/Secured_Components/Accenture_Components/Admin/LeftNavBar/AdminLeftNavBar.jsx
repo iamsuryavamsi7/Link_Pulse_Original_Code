@@ -105,31 +105,31 @@ const AdminLeftNavBar = () => {
 
         if ( pathName === `/admin-employee-approvals` ){
 
-            setAdminEmployeeApproval(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+            setAdminEmployeeApproval(`bg-[#cddef4] font-semibold text-customBlueLeftNavBar`);
 
         } else {
 
-            setAdminEmployeeApproval(``);
+            setAdminEmployeeApproval(`text-gray-800`);
 
         }
 
         if ( pathName === `/admin-dashboard` ){
 
-            setAdminDashBoard(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+            setAdminDashBoard(`bg-[#cddef4] font-semibold text-customBlueLeftNavBar`);
 
         } else {
 
-            setAdminDashBoard(``);
+            setAdminDashBoard(`text-gray-800`);
 
         }
 
         if ( pathName === `/admin-manage-projects` ){
 
-            setAdminSettings(`bg-[#cddef4] font-semibold text-customBlueAccenture`);
+            setAdminSettings(`bg-[#cddef4] font-semibold text-customBlueLeftNavBar`);
 
         } else {
 
-            setAdminSettings(``);
+            setAdminSettings(`text-gray-800`);
 
         }
 
@@ -145,7 +145,7 @@ const AdminLeftNavBar = () => {
 
                     <>
                   
-                        <div className={`hover:bg-[#cddef4] text-gray-800 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminDashBoard}`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminDashBoard}`}
                             onClick={() => navigate('/admin-dashboard')} 
                         >
 
@@ -185,7 +185,7 @@ const AdminLeftNavBar = () => {
 
                         </div>
 
-                        <div className={`hover:bg-[#cddef4] text-gray-800 cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminEmployeeApproval}`}
+                        <div className={`hover:bg-[#cddef4] cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 ${adminEmployeeApproval}`}
                             onClick={() => navigate('/admin-employee-approvals')}
                         >
 
@@ -309,7 +309,7 @@ const AdminLeftNavBar = () => {
                         <div className="relative mt-auto mb-5">
 
                             <div 
-                                className={`hover:bg-[#cddef4] cursor-pointer text-gray-800 h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 bottom-4 w-full ${adminSettings}`}
+                                className={`hover:bg-[#cddef4] cursor-pointer h-[50px] flex justify-start items-center transition-all duration-300 px-5 space-x-3 active:opacity-[0.6] rounded-r-[35px] rounded-l-[0px] navBar1 bottom-4 w-full ${adminSettings}`}
                                 onClick={() => {
 
                                     if ( settingsDragDown ){
@@ -343,7 +343,7 @@ const AdminLeftNavBar = () => {
 
                             {settingsDragDown && (
 
-                                <div className="absolute hover:opacity-80 active:opacity-60 top-[-60px] left-3 cursor-pointer bg-gray-800 duration-300 text-white rounded-lg overflow-hidden settingsDropDown z-50"
+                                <div className="absolute hover:opacity-80 active:opacity-60 top-[-60px] left-3 cursor-pointer bg-gray-300 duration-300 text-gray-700  rounded-lg overflow-hidden settingsDropDown z-50"
                                 onClick={() =>{
 
                                     navigate('/admin-manage-projects')

@@ -422,15 +422,9 @@ const AdminEmployeeApproval = () => {
 
             {role === admin && (
                 <>
-                    <div className="pl-[265px] pt-[120px] w-full">
+                    <div className="">
 
-                        <div className="mx-10 text-2xl font-serif tracking-wider">
-
-                            Employee Approvals
-
-                        </div>
-
-                        <div className="block mx-10 bg-white p-5 mt-5">
+                        <div className="block mx-10 bg-white p-5">
 
                            <div className="w-full flex justify-between">
 

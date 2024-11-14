@@ -7,7 +7,8 @@ export default {
 	theme: {
 		extend: {
 			colors: {
-				customBlueAccenture: '#0c82f8'
+				customBlueLeftNavBar: '#0c82f8',
+				customBlueLinkPulseBase: `#66B2FF`
 			}
 		},
 	},

@@ -6,6 +6,7 @@ import { MdAddBox, MdDeleteForever } from 'react-icons/md';
 import { Toaster, toast } from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { GoPlus } from 'react-icons/go';
 
 const AdminManageProjects = () => {
 
@@ -337,32 +338,42 @@ const AdminManageProjects = () => {
         const projectName = formData.projectName
         const projectDescription = formData.projectDescription
 
-        try{
+        if ( projectName !== '' && projectName !== null && projectDescription !== '' && projectDescription !== null ){
 
-            const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateProject/${projectId}`, {
-                projectName: projectName,
-                projectDescription: projectDescription
-            }, {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
-                }
-            })
+            try{
 
-            if ( response.status === 200 ){
-
-                toast.success('Project Updated', {
-                    duration: 1000
+                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateProject/${projectId}`, {
+                    projectName: projectName,
+                    projectDescription: projectDescription
+                }, {
+                    headers: {
+                        'Authorization': `Bearer ${access_token}`
+                    }
                 })
 
-                fetchProjectsData();
+                if ( response.status === 200 ){
 
-                setEditMode(false);
+                    toast.success('Project Updated', {
+                        duration: 1000
+                    })
+
+                    fetchProjectsData();
+
+                    setEditMode(false);
+
+                }
+
+            }catch(error){
+
+                handleFetchError(error);
 
             }
 
-        }catch(error){
+        } else {
 
-            handleFetchError(error);
+            toast.error(`Fill all fields`, {
+                duration: 2000
+            });
 
         }
 
@@ -454,14 +465,14 @@ const AdminManageProjects = () => {
 
                     <div className="fixed z-50 top-0 bottom-0 left-0 right-0 flex justify-center items-center">
 
-                        <div className="bg-gray-300 px-10 rounded-xl py-10  font-serif">
+                        <div className="bg-white border-2 border-gray-200 px-10 rounded-xl py-10">
 
                             <form
                                 className='space-y-5'
                                 onSubmit={(e) => editProjectFunction(e)}
                             >
 
-                                <div className="text-xl">
+                                <div className="text-xl text-gray-600">
 
                                     Edit Project
 
@@ -469,11 +480,11 @@ const AdminManageProjects = () => {
 
                                 <div className="">
 
-                                    <label> Project name </label><br />
+                                    <label className='text-gray-600'> Project name <span className='text-red-500'>*</span> </label><br />
 
                                     <input 
                                         type='text'
-                                        className='focus:outline-none border-2 border-sky-300 rounded-lg px-3 leading-8 mt-2'
+                                        className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
                                         name='projectName'
                                         value={formData.projectName}
                                         onChange={(e) => handleOnChangeFunction2(e)}
@@ -484,11 +495,11 @@ const AdminManageProjects = () => {
 
                                 <div className="">
 
-                                    <label> Project Desc </label><br />
+                                    <label className='text-gray-600'> Project Desc <span className='text-red-500'>*</span> </label><br />
 
                                     <input 
                                         type='text'
-                                        className='focus:outline-none border-2 border-sky-300 rounded-lg px-3 leading-8 mt-2'
+                                        className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
                                         name='projectDescription'
                                         value={formData.projectDescription}
                                         onChange={(e) => handleOnChangeFunction2(e)}
@@ -499,12 +510,12 @@ const AdminManageProjects = () => {
                                 <div className="flex">
 
                                     <button
-                                        className='bg-green-400 mx-3 px-2 py-1 rounded-md text-sm font-semibold hover:opacity-60 active:opacity-80'
+                                        className='bg-customBlueLinkPulseBase text-white focus:outline-none font-semibold mx-3 px-2 py-1 rounded-md text-lg hover:opacity-60 active:opacity-80'
                                         type='submit'
                                     >Save</button>
 
                                     <button
-                                        className='bg-red-400 mx-3 px-2 py-1 rounded-md text-sm font-semibold hover:opacity-60 active:opacity-80'
+                                        className='mx-3 px-2 py-1 rounded-md text-lg text-gray-600 font-semibold hover:opacity-60 active:opacity-80'
                                         onClick={(e) => cancelButtonFunction(e)}
                                     >Cancel</button>
 
@@ -518,23 +529,93 @@ const AdminManageProjects = () => {
 
                 )}
 
-                <div className="pl-[300px] pt-[100px] mr-5">
-
-                    <div className="text-2xl font-serif tracking-wider">
-
-                        Manage Projects
-
-                    </div>
+                <div className="">
 
                 <div className="flex items-center z-0">
 
-                    <div className="bg-white px-5 mt-5 py-5 mr-10 flex w-full mb-20">
+                    <div className="bg-white px-5 py-5 mr-10 flex w-full mb-20">
 
                         <div className="space-y-3 block w-full">
 
-                            <div className="text-xl font-serif tracking-wider">
+                            <div className="text-xl tracking-wider">
 
-                            Current Projects
+                            <span className='font-semibold'>Projects</span> | Showing all active projects
+
+                            </div>
+
+                            <div className="flex space-x-5">
+
+                                <div className="inline-flex text-gray-600 border-dotted border-2 border-gray-500 rounded-xl px-2 py-1 items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer my-2"
+                                    onClick={addProjectButtonFunction}
+                                >
+
+                                    <div className="text-xl font-serif"
+                                    >
+
+                                        <GoPlus
+                                            className='text-2xl'
+                                        />
+
+                                    </div>
+
+                                    <div className="text-sm font-serif">
+
+                                        Add Project
+
+                                    </div>
+
+                                </div>
+
+                                {showAddProject && (
+
+                                    <div className="flex items-center space-x-5">
+
+                                        <div className="flex items-center space-x-5 transition-all">
+
+                                            <label  className='text-sm text-gray-600  font-semibold'>Project Name</label> <br />
+
+                                            <input 
+                                                type='text'
+                                                className='focus:outline-none focus:border-customBlueLinkPulseBase border-2 rounded-xl px-2 leading-8'
+                                                placeholder='Enter Project Name'
+                                                name='projectName'
+                                                value={projectDetails.projectName}
+                                                onChange={(e) => handleOnChangeFunction(e)}
+                                            />
+
+                                        </div>
+
+                                        <div className="flex items-center space-x-5 transition-all">
+
+                                            <label className='text-sm text-gray-600 font-semibold'>Project Description</label> <br />
+
+                                            <input 
+                                            type='text'
+                                            className='focus:outline-none focus:border-customBlueLinkPulseBase border-2  rounded-xl px-2 leading-8'
+                                            placeholder='Enter Project Description'
+                                            name='projectDescription'
+                                            value={projectDetails.projectDescription}
+                                            onChange={(e) => handleOnChangeFunction(e)}
+                                            />
+
+                                        </div>
+
+                                        <div className="">
+
+                                            <button
+                                                className='bg-gray-200 text-gray-600 hover:opacity-80 active:opacity-60 px-3 leading-[32px] rounded-lg text-sm font-semibold'
+                                                onClick={addProjectFunction}
+                                            >
+
+                                                Add Project
+
+                                            </button>
+
+                                        </div>
+
+                                    </div>
+
+                                )}
 
                             </div>
 
@@ -615,10 +696,10 @@ const AdminManageProjects = () => {
                                                 <td className='px-5'>{project.projectName}</td>
                                         
                                                 <td
-                                                    className='w-[300px] flex overflow-hidden'
+                                                    className='w-[300px] flex overflow-hidden mb-3'
                                                 >{project.projectDescription}</td>
                                         
-                                                <td className='px-5'>{new Date(project.projectCreatedOn).toDateString()}</td>
+                                                <td className='px-5'>{new Date(project.projectCreatedOn).toLocaleString()}</td>
                                         
                                                 <td className='px-5 space-x-5 flex items-center'>
                                         
@@ -681,78 +762,6 @@ const AdminManageProjects = () => {
                                         className='bg-gray-200 cursor-pointer px-2 py-2 text-xs rounded-md hover:opacity-80 active:opacity-60'
                                     ><FaArrowRight /></button>
                                 
-                                </div>
-
-                            )}
-
-                            <div className="inline-flex text-gray-600 items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer"
-                                onClick={addProjectButtonFunction}
-                            >
-
-                                <div className="text-xl font-serif"
-                                >
-
-                                    <MdAddBox
-                                        className='text-2xl'
-                                    />
-
-                                </div>
-
-                                <div className="text-sm font-serif">
-
-                                    Add Project
-
-                                </div>
-
-                            </div>
-
-                            {showAddProject && (
-
-                                <div className="flex items-center space-x-5">
-
-                                    <div className="flex items-center space-x-5 transition-all">
-
-                                        <label  className='text-sm text-gray-600  font-semibold'>Project Name</label> <br />
-
-                                        <input 
-                                            type='text'
-                                            className='focus:outline-none border-gray-500 border-[1px] rounded-sm px-2 leading-6'
-                                            placeholder='Enter Project Name'
-                                            name='projectName'
-                                            value={projectDetails.projectName}
-                                            onChange={(e) => handleOnChangeFunction(e)}
-                                        />
-
-                                    </div>
-
-                                    <div className="flex items-center space-x-5 transition-all">
-
-                                        <label className='text-sm text-gray-600 font-semibold'>Project Description</label> <br />
-
-                                        <input 
-                                        type='text'
-                                        className='focus:outline-none border-gray-500 border-[1px] rounded-sm px-2 leading-6'
-                                        placeholder='Enter Project Description'
-                                        name='projectDescription'
-                                        value={projectDetails.projectDescription}
-                                        onChange={(e) => handleOnChangeFunction(e)}
-                                        />
-
-                                    </div>
-
-                                    <div className="">
-
-                                        <button
-                                            className='bg-gray-200 text-gray-600 hover:opacity-80 active:opacity-60 px-3 leading-[32px] rounded-lg text-sm font-semibold'
-                                            onClick={addProjectFunction}
-                                        >
-
-                                            Add Project
-
-                                        </button>
-
-                                    </div>
-
                                 </div>
 
                             )}
