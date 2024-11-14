@@ -161,7 +161,7 @@ const NavBarDropDown = ({userObject, imageSrc}) => {
 
                         <div className="">
 
-                            Profile Settings
+                            Profile
 
                         </div>
 

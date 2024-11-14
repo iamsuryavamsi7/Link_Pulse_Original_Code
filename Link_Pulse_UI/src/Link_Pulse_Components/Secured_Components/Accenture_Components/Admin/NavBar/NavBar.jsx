@@ -59,7 +59,16 @@ const NavBar = () => {
 
     }
 
+    // State to hold style of conform check out arrow
+    const [conformCheckInArrowState, setConformCheckInArrowState] = useState(``);
+
     const FaArrowRightToBracketFunction = () => {
+
+        setConformCheckOutActivated(false);
+
+        setNotificationActive(false);
+
+        setProfileViewTurnedOn(false);
 
         if ( conformCheckInActivated ) {
 
@@ -73,7 +82,31 @@ const NavBar = () => {
 
     }
 
+    // Function for Check In Button
+    const CheckInFunction = () => {
+
+        setConformCheckOutArrowState(``);
+
+        setConformCheckInArrowState(`pointer-events-none opacity-60`);
+
+        setConformCheckInActivated(false);
+
+        toast.success(`Check In Success`, {
+            duration: 1000
+        })
+
+    }
+
+    // State to hold style of conform check out arrow
+    const [conformCheckOutArrowState, setConformCheckOutArrowState] = useState(`pointer-events-none opacity-60`);
+
     const FaArrowRightFromBracketFunction = () => {
+
+        setConformCheckInActivated(false);
+
+        setNotificationActive(false);
+
+        setProfileViewTurnedOn(false);
 
         if ( conformCheckOutActivated ) {
 
@@ -87,7 +120,28 @@ const NavBar = () => {
 
     }
 
+    // Function for Check Out Button
+    const CheckOutFunction = () => {
+
+        setConformCheckOutArrowState(`pointer-events-none opacity-60`);
+
+        setConformCheckInArrowState(``);
+
+        setConformCheckOutActivated(false);
+
+        toast.success(`Check Out Success`, {
+            duration: 1000
+        })
+
+    }
+
     const AiFillNotificationFunction = () => {
+
+        setConformCheckInActivated(false);
+
+        setConformCheckOutActivated(false);
+
+        setProfileViewTurnedOn(false);
 
         if ( notificationActive ) {
 
@@ -102,6 +156,12 @@ const NavBar = () => {
     }
 
     const profileFunction = () => {
+
+        setConformCheckInActivated(false);
+
+        setConformCheckOutActivated(false);
+
+        setNotificationActive(false);
 
         if ( profileViewTurnedOn ) {
 
@@ -233,13 +293,16 @@ const NavBar = () => {
                 <div className="relative">
 
                     <FaArrowRightToBracket 
-                        className='h-[35px] w-[35px] bg-[#F0F2F5] px-2 py-1 rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer duration-300 transition-all'
+                        className={`h-[35px] w-[35px] bg-[#F0F2F5] px-2 py-1 rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer ${conformCheckInArrowState}`}
                         onClick={FaArrowRightToBracketFunction}
                     />
 
                     {conformCheckInActivated && (
 
-                        <div className="absolute top-[49px] right-0 bg-white shadow-lg border-gray-200 border-[1px] rounded-b-lg w-28 text-center cursor-pointer text-base py-2 hover:opacity-90 active:opacity-40 transition-all tracking-wider">
+                        <div 
+                            className={`absolute top-[49px] right-0 bg-white shadow-lg border-gray-200 border-[1px] rounded-b-lg w-28 text-center cursor-pointer text-base py-2 hover:opacity-90 active:opacity-40 tracking-wider`}
+                            onClick={CheckInFunction}
+                        >
 
                             Check In
 
@@ -252,13 +315,16 @@ const NavBar = () => {
                 <div className="relative">
 
                     <FaArrowRightFromBracket 
-                        className='h-[35px] w-[35px] bg-[#F0F2F5] px-2 py-1 rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer'
+                        className={`h-[35px] w-[35px] bg-[#F0F2F5] px-2 py-1 rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer ${conformCheckOutArrowState}`}
                         onClick={FaArrowRightFromBracketFunction}
                     />
 
                     {conformCheckOutActivated && (
 
-                        <div className="absolute top-[49px] right-0 bg-white shadow-lg border-gray-200 border-[1px] rounded-b-lg w-28 text-center cursor-pointer text-base py-2 hover:opacity-90 active:opacity-40 transition-all tracking-wider">
+                        <div 
+                            className="absolute top-[49px] right-0 bg-white shadow-lg border-gray-200 border-[1px] rounded-b-lg w-28 text-center cursor-pointer text-base py-2 hover:opacity-90 active:opacity-40 tracking-wider"
+                            onClick={CheckOutFunction}
+                        >
 
                             Check Out
 

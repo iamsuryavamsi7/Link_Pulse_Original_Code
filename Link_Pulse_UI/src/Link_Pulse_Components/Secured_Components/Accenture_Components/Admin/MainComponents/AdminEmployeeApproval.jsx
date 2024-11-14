@@ -7,6 +7,8 @@ import { MdOutlineDeleteForever } from 'react-icons/md';
 import { RiRefreshFill } from 'react-icons/ri';
 import { Toaster, toast } from 'react-hot-toast';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import { LuRefreshCw } from 'react-icons/lu';
+import { BiRefresh } from 'react-icons/bi';
 
 const AdminEmployeeApproval = () => {
     
@@ -428,9 +430,9 @@ const AdminEmployeeApproval = () => {
 
                            <div className="w-full flex justify-between">
 
-                            <div className="text-xl font-serif tracking-wide">
+                            <div className="text-xl tracking-wide">
 
-                                New Employee Request
+                                <span className='font-semibold'>Employee Approvals</span> | Showing pending employee requests
 
                             </div>
 
@@ -440,7 +442,7 @@ const AdminEmployeeApproval = () => {
 
                                     <span>Refresh</span>
 
-                                    <RiRefreshFill 
+                                    <BiRefresh 
                                         className={`text-2xl ${refreshAnimationState}`} 
                                     />
 
