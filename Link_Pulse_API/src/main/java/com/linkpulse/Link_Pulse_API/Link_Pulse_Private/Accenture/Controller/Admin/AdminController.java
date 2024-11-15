@@ -1,5 +1,7 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Admin;
 
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDepartmentNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDesignationNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Helper.MediaTypeResolver;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
@@ -189,14 +191,150 @@ public class AdminController {
     @PostMapping("/updateProfileData")
     public ResponseEntity<String> updateProfileData(
             @RequestParam(value = "updateImageSrc", required = false) MultipartFile updateImageSrc,
-            @RequestParam("firstName") String firstName,
-            @RequestParam("lastName") String lastName,
-            @RequestParam("about") String about,
-            @RequestParam("whatILoveAboutMyJob") String whatILoveAboutMyJob,
+            @RequestParam(value = "firstName", required = false) String firstName,
+            @RequestParam(value = "lastName", required = false) String lastName,
+            @RequestParam(value = "about", required = false) String about,
+            @RequestParam(value = "whatILoveAboutMyJob", required = false) String whatILoveAboutMyJob,
             HttpServletRequest request
     ) throws IOException {
 
         String successMessage = adminService.updateProfileData(updateImageSrc, firstName, lastName, about, whatILoveAboutMyJob, request);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/fetchUserDetails")
+    public ResponseEntity<AdminProfileModel> fetchUserDetails(
+            HttpServletRequest request
+    ){
+
+        AdminProfileModel fetchedUserDetails = adminService.fetchUserDetails(request);
+
+        return ResponseEntity.ok(fetchedUserDetails);
+
+    }
+
+    @GetMapping("/fetchAllDepartments/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<FetchAllDepartmentsResponseModel>> fetchAllDepartments(
+            @PathVariable("pageNumber") int pageNumber,
+            @PathVariable("pageSize") int pageSize
+    ){
+
+        List<FetchAllDepartmentsResponseModel> fetchedProjects = adminService.fetchAllDepartments(pageNumber, pageSize);
+
+        return ResponseEntity.ok(fetchedProjects);
+
+    }
+
+    @PostMapping("/addDepartment")
+    public ResponseEntity<String> addDepartment(
+            @RequestParam("departmentName") String departmentName
+    ){
+
+        String successMessage = adminService.addDepartment(departmentName);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @DeleteMapping("/deleteDepartmentById/{departmentId}")
+    public ResponseEntity<String> deleteDepartment(
+            @PathVariable("departmentId") Long departmentId
+    ){
+
+        String successMessage = adminService.deleteDepartmentById(departmentId);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/getDepartmentById/{departmentId}")
+    public ResponseEntity<FetchAllDepartmentsResponseModel> getDepartmentById(
+            @PathVariable("departmentId") Long departmentId
+    ) throws AccentureDepartmentNotFoundException {
+
+        FetchAllDepartmentsResponseModel fetchedDepartment = adminService.getDepartmentById(departmentId);
+
+        return ResponseEntity.ok(fetchedDepartment);
+
+    }
+
+    @PutMapping("/updateDepartment/{departmentId}")
+    public ResponseEntity<String> updateDepartmentById(
+            @PathVariable("departmentId") Long departmentId,
+            @RequestParam("departmentName") String departmentName
+    ) throws AccentureDepartmentNotFoundException {
+
+        String successMessage = adminService.updateDepartmentById(departmentId, departmentName);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+    @GetMapping("/fetchAllDesignations/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<AdminDesignationResponseModel>> fetchAllDesignations(
+            @PathVariable("pageNumber") int pageNumber,
+            @PathVariable("pageSize") int pageSize
+    ){
+
+        List<AdminDesignationResponseModel> fetchedProjects = adminService.fetchAllDesignations(pageNumber, pageSize);
+
+        return ResponseEntity.ok(fetchedProjects);
+
+    }
+
+    @PostMapping("/addDesignation")
+    public ResponseEntity<String> addDesignation(
+            @RequestParam("departmentName") String designationName
+    ){
+
+        String successMessage = adminService.addDesignation(designationName);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @DeleteMapping("/deleteDesignationById/{designationId}")
+    public ResponseEntity<String> deleteDesignation(
+            @PathVariable("designationId") Long designationId
+    ){
+
+        String successMessage = adminService.deleteDesignationById(designationId);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/getDesignationById/{designationId}")
+    public ResponseEntity<AdminDesignationResponseModel> getDesignationById(
+            @PathVariable("designationId") Long designationId
+    ) throws AccentureDesignationNotFoundException {
+
+        AdminDesignationResponseModel fetchedDepartment = adminService.getDesignationById(designationId);
+
+        return ResponseEntity.ok(fetchedDepartment);
+
+    }
+
+    @PutMapping("/updateDesignationById/{designationId}")
+    public ResponseEntity<String> updateDesignationById(
+            @PathVariable("designationId") Long designationId,
+            @RequestParam("designationName") String designationName
+    ) throws AccentureDesignationNotFoundException {
+
+        String successMessage = adminService.updateDesignationById(designationId, designationName);
 
         return ResponseEntity.ok(successMessage);
 

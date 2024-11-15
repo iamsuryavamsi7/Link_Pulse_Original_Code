@@ -100,7 +100,7 @@ const NavBarDropDown = ({userObject, imageSrc, closeProfileView}) => {
                         {imageSrc && imageSrc.length > 0 ? (
                             <img 
                             src={imageSrc}
-                            className='h-[40px] w-auto object-cover rounded-[50%] ml-5'
+                            className='h-[40px] w-[40px] object-cover rounded-[50%] ml-5'
                             />
                         ) : (
                             <img 

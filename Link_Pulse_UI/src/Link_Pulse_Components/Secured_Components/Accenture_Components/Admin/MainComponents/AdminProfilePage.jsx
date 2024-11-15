@@ -47,15 +47,15 @@ const AdminProfilePage = () => {
 
                 setImageSrc(imageBlob);
 
-                console.log(imageBlob);
+                setEditModeImageSrc(imageBlob);
 
             }
 
         }catch(error){
 
-            handleFetchError(error);
-
             setImageSrc(null);
+
+            setEditModeImageSrc(null);
 
         }
 
@@ -102,6 +102,14 @@ const AdminProfilePage = () => {
 
     // Edit mode profile pic source
     const [editModeImageSrc, setEditModeImageSrc] = useState(null);
+
+    const editProfileFunction = () => {
+
+        setEditModeActivated(true); 
+
+        setShowActions(false);
+
+    }
 
     // Image src for edit mode form
     const [editModeImageFormSrc, setEditModeImageFormSrc] = useState(null);
@@ -158,6 +166,15 @@ const AdminProfilePage = () => {
 
                 console.log(responseData);
 
+                setUpdateProfileData({
+                    firstName: '',
+                    lastName: '',
+                    about: '',
+                    whatILoveAboutMyJob: ''
+                });
+
+                setEditModeActivated(false);
+
             }
 
         }catch(error){
@@ -173,7 +190,7 @@ const AdminProfilePage = () => {
 
         try{
 
-            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchUserObject', {
+            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchUserDetails', {
                 headers: {
                     Authorization: `Bearer ${access_token}`
                 }
@@ -184,6 +201,15 @@ const AdminProfilePage = () => {
                 const userData = response.data;
 
                 setRole(userData.role);
+
+                setUpdateProfileData({
+                    firstName: userData.firstName,
+                    lastName: userData.lastName,
+                    about: userData.about,
+                    whatILoveAboutMyJob: userData.whatILoveAboutMyJob
+                })
+
+                console.log(userData);
 
             }
 
@@ -243,12 +269,12 @@ const AdminProfilePage = () => {
 
                         <div className="flex border-[1px] border-gray-300 mr-10 bg-white">
 
-                            <div className="">
+                            <div className="shrink-0">
 
                                 {imageSrc && imageSrc.length > 0 ? (
                                     <img 
                                     src={imageSrc}
-                                    className='w-[300px] h-auto object-cover'
+                                    className='w-[260px] h-[260px] rounded-sm object-cover'
                                     />
                                 ) : (
                                     <img 
@@ -377,13 +403,7 @@ const AdminProfilePage = () => {
 
                                                     <li
                                                         className='px-3 py-2 hover:opacity-80 active:opacity-60 focus:outline-none border-b-[1px] border-gray-200 cursor-pointer'
-                                                        onClick={() => {
-
-                                                            setEditModeActivated(true); 
-
-                                                            setShowActions(false);
-
-                                                        }}
+                                                        onClick={editProfileFunction}
                                                     >Edit Profile</li>
 
                                                     <li
@@ -465,8 +485,6 @@ const AdminProfilePage = () => {
 
                                         setEditModeActivated(false);
 
-                                        setEditModeImageSrc(null);
-
                                     }}
                                 />
 
@@ -498,6 +516,7 @@ const AdminProfilePage = () => {
                                             className='hidden'
                                             type='file'
                                             ref={fileInputRef}
+                                            accept='image/*'
                                             onChange={handleUpdateImageInputFunction}
                                         />
 
@@ -607,7 +626,7 @@ const AdminProfilePage = () => {
                                     className='text-sm text-gray-600 border-gray-200 border-2 px-2 py-1 rounded-lg hover:opacity-80 active:opacity-60 focus:outline-none'
                                 >
 
-                                    Save
+                                    update
 
                                 </button>
 

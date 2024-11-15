@@ -51,8 +51,6 @@ const NavBar = () => {
 
         }catch(error){
 
-            handleFetchError(error);
-
             setImageSrc(null);
 
         }
@@ -367,7 +365,7 @@ const NavBar = () => {
                     {imageSrc && imageSrc.length > 0 ? (
                         <img 
                         src={imageSrc}
-                        className='h-[38px] w-auto object-cover rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer'
+                        className='h-[38px] w-[38px] object-cover rounded-[50%] hover:opacity-[0.8] active:opacity-[0.6] cursor-pointer'
                         onClick={profileFunction}
                         />
                     ) : (

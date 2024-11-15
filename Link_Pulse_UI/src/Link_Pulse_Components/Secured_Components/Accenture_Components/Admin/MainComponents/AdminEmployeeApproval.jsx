@@ -414,7 +414,7 @@ const AdminEmployeeApproval = () => {
     return (
         <>
             <Helmet>
-                <title> Admin Dashboard | Accenture </title>
+                <title> Employee Approvals | Accenture </title>
                 <meta name="description" content={`Link Pulse Dashboard where users perform their activities`} />
                 <meta name="keywords" content="User Profile, Project Management, John Doe, Employee Details, Urlify, Employee Approval Urlify" />
                 <meta property="og:type" content="website" />

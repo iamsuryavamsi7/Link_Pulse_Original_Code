@@ -123,7 +123,7 @@ const AdminLeftNavBar = () => {
 
         }
 
-        if ( pathName === `/admin-manage-projects` ){
+        if ( pathName === `/admin-manage-projects` || pathName === `/admin-manage-departments` || pathName === `/admin-manage-designations` ){
 
             setAdminSettings(`bg-[#cddef4] font-semibold text-customBlueLeftNavBar`);
 
@@ -359,7 +359,7 @@ const AdminLeftNavBar = () => {
 
                                         <li
                                             className=''
-                                        > Manage Projects</li>
+                                        > Manage</li>
 
                                     </ul>
 

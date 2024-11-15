@@ -10,12 +10,19 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class AdminNavBarUserObjectModel {
+public class AdminProfileModel {
 
     private Long id;
     private String profilePicUrl;
-    private String userName;
+    private String firstName;
+    private String lastName;
+    private String mobileNumber;
     private String designation;
+    private String department;
+    private String about;
+    private String whatILoveAboutMyJob;
     private Role role;
+    private Long employeeNumber;
+    private String companyLocation;
 
 }

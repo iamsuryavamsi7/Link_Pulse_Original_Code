@@ -11,6 +11,9 @@ import Accenture404NotFoundPage from "./Link_Pulse_Components/Secured_Components
 import AdminProfilePage from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminProfilePage";
 import AdminProfileAbout from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminProfileAbout";
 import AdminProfileJob from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminProfileJob";
+import AdminManage from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManage";
+import AdminManageDepartments from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageDepartments";
+import AdminManageDesignations from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageDesignations";
 
 // Public Pages Router
 function AppRouter() {
@@ -46,10 +49,16 @@ function AccentureRouter() {
 				<Route element={<Accenture_Admin_Layout />}>
 
 					<Route path = "/admin-dashboard" element = {<AdminDashboard />} />
-					<Route path="/admin-manage-projects" element= {<AdminManageProjects />}/>
+
+					{/* Admin Manage Routing */}
+					<Route element= {<AdminManage />}>
+						<Route path="/admin-manage-projects" element={<AdminManageProjects />}/>
+						<Route path="/admin-manage-departments" element={<AdminManageDepartments />}/>
+						<Route path="/admin-manage-designations" element={<AdminManageDesignations />}/>
+					</Route>
 					<Route path="/admin-employee-approvals" element= {<AdminEmployeeApproval />}/>
 						
-						{/* Routes for Admin Profile Page */}
+					{/* Routes for Admin Profile Page */}
 					<Route element= {<AdminProfilePage />}>
 						<Route path="/admin-profile-page" element={<AdminProfileAbout />}/>
 						<Route path="/admin-job-page" element={<AdminProfileJob />}/>

@@ -58,6 +58,8 @@ public class AccentureUserEntity implements UserDetails {
 
     private String department;
 
+    private String mobileNumber;
+
     @Length(
             max = 1024
     )
@@ -67,6 +69,10 @@ public class AccentureUserEntity implements UserDetails {
             max = 1024
     )
     private String whatILoveAboutMyJob;
+
+    private Long employeeNumber;
+
+    private String companyLocation;
 
     private Date registeredDate;
 

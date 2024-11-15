@@ -8,7 +8,7 @@ import { Helmet } from 'react-helmet-async';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
 import { GoPlus } from 'react-icons/go';
 
-const AdminManageProjects = () => {
+const AdminManageDepartments = () => {
 
     // JWT_TOKEN
     const access_token = Cookies.get('accenture_access_token');
@@ -19,9 +19,9 @@ const AdminManageProjects = () => {
     // Admin role value
     const admin = 'ADMIN';
 
-    const [projectData, setProjectData] = useState();
+    const [departmentData, setDepartmentData] = useState();
 
-    const [showAddProject, setShowAddProject] = useState(false);
+    const [showAddProject, setShowAddDepartment] = useState(false);
 
     const [editButtonVisible, setEditButtonVisible] = useState({});
 
@@ -37,13 +37,13 @@ const AdminManageProjects = () => {
     const [isLastPage, setIsLastPage] = useState(false); // 
 
     // Function for checking projects are available for next page
-    const checkIfProjectsAreAvailable = async (pageNumber) => {
+    const checkIfDepartmentsAreAvailable = async (pageNumber) => {
 
         const page = pageNumber;
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchProjectsData/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllProjects/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -80,7 +80,7 @@ const AdminManageProjects = () => {
 
             const pageNumber = page + 1;
 
-            const response = await checkIfProjectsAreAvailable(pageNumber);
+            const response = await checkIfDepartmentsAreAvailable(pageNumber);
 
             if ( response ){
 
@@ -126,17 +126,15 @@ const AdminManageProjects = () => {
     }
 
     // State to store add projects form details
-    const [projectDetails, setProjectDetails] = useState({
-        projectName: "",
-        projectDescription: ""
+    const [departmentDetails, setDepartmentDetails] = useState({
+        departmentName: ""
     });
 
     // State to store edit projects form details
     const [formData, setFormData] = useState({
         id: "",
-        projectName: "",
-        projectDescription: "",
-        projectCreatedOn: "",
+        departmentName: "",
+        departmentCreatedOn: "",
     });
 
     // State to activate and deactive edit mode
@@ -189,25 +187,31 @@ const AdminManageProjects = () => {
 
     }
 
-    const addProjectButtonFunction = () => {
+    // Function to show add deprtment option
+    const addDepartmentButtonFunction = () => {
 
         if ( showAddProject ) {
 
-            setShowAddProject(false);
+            setShowAddDepartment(false);
 
         } else {
 
-            setShowAddProject(true);
+            setShowAddDepartment(true);
 
         }
 
     }
 
-    const addProjectFunction = async () => {
+    // Function to add departments
+    const addDepartmentFunction = async () => {
+
+        const formData = new FormData();
+
+        formData.append('departmentName', departmentDetails.departmentName);
 
         try{
 
-            const response = await axios.post('http://localhost:7777/api/v1/accenture-admin/addProject', projectDetails, {
+            const response = await axios.post('http://localhost:7777/api/v1/accenture-admin/addDepartment', formData, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -215,16 +219,17 @@ const AdminManageProjects = () => {
 
             if ( response.status === 200 ){
 
-                console.log(response.data);
+                fetchDepartmentsData();
 
-                fetchProjectsData();
-
-                setProjectDetails({
-                    projectName: "",
-                    projectDescription: ""
+                setDepartmentDetails({
+                    departmentName: ""
                 });
 
-                setShowAddProject(false);
+                setShowAddDepartment(false);
+
+                toast.success('Department Added Successful', {
+                    duration: 1000
+                });
 
             }
 
@@ -236,13 +241,14 @@ const AdminManageProjects = () => {
         
     }
 
+    // Function to store the data in state onChange for add department details
     const handleOnChangeFunction = (e) => { 
 
         e.preventDefault();
 
         const value = e.target.value;
 
-        setProjectDetails({...projectDetails, [e.target.name]: value});
+        setDepartmentDetails({...departmentDetails, [e.target.name]: value});
 
     }
 
@@ -256,13 +262,13 @@ const AdminManageProjects = () => {
     }
 
     // Function to delete project by id
-    const projectDeleteFunction = async (id) => {
+    const DepartmentDeleteFunction = async (id) => {
 
-        const projectId = id;
+        const departmentId = id;
 
         try{
 
-            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteProjectById/${projectId}`, {
+            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteDepartmentById/${departmentId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -270,11 +276,11 @@ const AdminManageProjects = () => {
 
             if ( response.status === 200 ){
 
-                toast.success('Project Deleted Successfully', {
+                toast.success('Department Deleted Successfully', {
                     duration: 1000
                 });
 
-                fetchProjectsData();
+                fetchDepartmentsData();
 
             }
 
@@ -291,13 +297,13 @@ const AdminManageProjects = () => {
     }
 
     // Function to fetch project data by id then enabling edit mode
-    const editButtonManageProject = async (id) => {
+    const editButtonManageDepartment = async (id) => {
 
-        const projectId = id;
+        const departmentId = id;
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/getProjectById/${projectId}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/getDepartmentById/${departmentId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -311,6 +317,8 @@ const AdminManageProjects = () => {
 
                 setFormData(responseData);
 
+                console.log(responseData);
+
             }
 
         }catch(error){
@@ -321,6 +329,7 @@ const AdminManageProjects = () => {
 
     }
 
+    // Function to activate/deactive edit mode
     const cancelButtonFunction = (e) => {
 
         e.preventDefault();
@@ -330,22 +339,22 @@ const AdminManageProjects = () => {
     }
 
     // Function to update project data in DB
-    const editProjectFunction = async (e) => {
+    const editDepartmentFunction = async (e) => {
 
         e.preventDefault();
 
-        const projectId = formData.id;
-        const projectName = formData.projectName
-        const projectDescription = formData.projectDescription
+        const departmentId = formData.id;
+        const departmentName = formData.departmentName;
 
-        if ( projectName !== '' && projectName !== null && projectDescription !== '' && projectDescription !== null ){
+        if ( departmentName !== '' && departmentName !== null ){
+
+            const formDataDto = new FormData();
+
+            formDataDto.append('departmentName', departmentName);
 
             try{
 
-                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateProject/${projectId}`, {
-                    projectName: projectName,
-                    projectDescription: projectDescription
-                }, {
+                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateDepartment/${departmentId}`, formDataDto, {
                     headers: {
                         'Authorization': `Bearer ${access_token}`
                     }
@@ -357,7 +366,7 @@ const AdminManageProjects = () => {
                         duration: 1000
                     })
 
-                    fetchProjectsData();
+                    fetchDepartmentsData();
 
                     setEditMode(false);
 
@@ -379,11 +388,12 @@ const AdminManageProjects = () => {
 
     }
 
-    const fetchProjectsData = async () => {
+    // Function to fetch all departments
+    const fetchDepartmentsData = async () => {
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchProjectsData/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllDepartments/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -391,9 +401,7 @@ const AdminManageProjects = () => {
 
             if ( response.status === 200 ){
 
-                setProjectData(response.data);
-
-                console.log(response.data);
+                setDepartmentData(response.data);
 
             }
 
@@ -440,7 +448,7 @@ const AdminManageProjects = () => {
 
     useEffect(() => {
 
-        fetchProjectsData();
+        fetchDepartmentsData();
 
     }, [page]);
 
@@ -451,7 +459,7 @@ const AdminManageProjects = () => {
             <Toaster />
 
             <Helmet>
-                <title> Admin Manage Projects | Accenture </title>
+                <title> Admin Manage Departments | Accenture </title>
                 <meta name="description" content={`Link Pulse Dashboard where users perform their activities`} />
                 <meta name="keywords" content="User Profile, Project Management, John Doe, Employee Details, Urlify, Employee Approval Urlify" />
                 <meta property="og:type" content="website" />
@@ -469,39 +477,24 @@ const AdminManageProjects = () => {
 
                             <form
                                 className='space-y-5'
-                                onSubmit={(e) => editProjectFunction(e)}
+                                onSubmit={(e) => editDepartmentFunction(e)}
                             >
 
                                 <div className="text-xl text-gray-600">
 
-                                    Edit Project
+                                    Edit Department
 
                                 </div>
 
                                 <div className="">
 
-                                    <label className='text-gray-600'> Project name <span className='text-red-500'>*</span> </label><br />
+                                    <label className='text-gray-600'> Department name <span className='text-red-500'>*</span> </label><br />
 
                                     <input 
                                         type='text'
                                         className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
-                                        name='projectName'
-                                        value={formData.projectName}
-                                        onChange={(e) => handleOnChangeFunction2(e)}
-                                    />
-
-                                </div>
-
-
-                                <div className="">
-
-                                    <label className='text-gray-600'> Project Desc <span className='text-red-500'>*</span> </label><br />
-
-                                    <input 
-                                        type='text'
-                                        className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
-                                        name='projectDescription'
-                                        value={formData.projectDescription}
+                                        name='departmentName'
+                                        value={formData.departmentName}
                                         onChange={(e) => handleOnChangeFunction2(e)}
                                     />
 
@@ -539,14 +532,14 @@ const AdminManageProjects = () => {
 
                             <div className="text-xl tracking-wider">
 
-                            <span className='font-semibold'>Projects</span> | Showing all active projects
+                            <span className='font-semibold'>Departments</span> | Showing all departments
 
                             </div>
 
                             <div className="flex space-x-5">
 
                                 <div className="inline-flex text-gray-600 border-dotted border-2 border-gray-500 rounded-xl px-2 py-1 items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer my-2"
-                                    onClick={addProjectButtonFunction}
+                                    onClick={addDepartmentButtonFunction}
                                 >
 
                                     <div className="text-xl font-serif"
@@ -560,7 +553,7 @@ const AdminManageProjects = () => {
 
                                     <div className="text-sm font-serif">
 
-                                        Add Project
+                                        Add Department
 
                                     </div>
 
@@ -572,30 +565,15 @@ const AdminManageProjects = () => {
 
                                         <div className="flex items-center space-x-5 transition-all">
 
-                                            <label  className='text-sm text-gray-600  font-semibold'>Project Name</label> <br />
+                                            <label  className='text-sm text-gray-600  font-semibold'>Department Name</label> <br />
 
                                             <input 
                                                 type='text'
                                                 className='focus:outline-none focus:border-customBlueLinkPulseBase border-2 rounded-xl px-2 leading-8'
-                                                placeholder='Enter Project Name'
-                                                name='projectName'
-                                                value={projectDetails.projectName}
+                                                placeholder='Enter Department Name'
+                                                name='departmentName'
+                                                value={departmentDetails.departmentName}
                                                 onChange={(e) => handleOnChangeFunction(e)}
-                                            />
-
-                                        </div>
-
-                                        <div className="flex items-center space-x-5 transition-all">
-
-                                            <label className='text-sm text-gray-600 font-semibold'>Project Description</label> <br />
-
-                                            <input 
-                                            type='text'
-                                            className='focus:outline-none focus:border-customBlueLinkPulseBase border-2  rounded-xl px-2 leading-8'
-                                            placeholder='Enter Project Description'
-                                            name='projectDescription'
-                                            value={projectDetails.projectDescription}
-                                            onChange={(e) => handleOnChangeFunction(e)}
                                             />
 
                                         </div>
@@ -604,10 +582,10 @@ const AdminManageProjects = () => {
 
                                             <button
                                                 className='bg-gray-200 text-gray-600 hover:opacity-80 active:opacity-60 px-3 leading-[32px] rounded-lg text-sm font-semibold'
-                                                onClick={addProjectFunction}
+                                                onClick={addDepartmentFunction}
                                             >
 
-                                                Add Project
+                                                Add Departments
 
                                             </button>
 
@@ -636,8 +614,7 @@ const AdminManageProjects = () => {
                                         >S.No</th>
                                         <th
                                             className='px-5'
-                                        >Project Name</th>
-                                        <th>Project Description</th>
+                                        >Departments Name</th>
                                         <th
                                             className='px-5'
                                         >Created On</th>
@@ -649,7 +626,7 @@ const AdminManageProjects = () => {
 
                                 </thead>
 
-                                {projectData && projectData.length === 0 && (
+                                {departmentData && departmentData.length === 0 && (
 
                                     <tbody>
 
@@ -663,7 +640,6 @@ const AdminManageProjects = () => {
                                             <td
                                                 className='px-5'
                                             >No Data Found</td>
-                                            <td>No Data Found</td>
                                             <td
                                                 className='px-5'
                                             >No Data Found</td>
@@ -680,12 +656,12 @@ const AdminManageProjects = () => {
                                 <tbody>
 
 
-                                    {projectData && projectData.length > 0 && (
+                                    {departmentData && departmentData.length > 0 && (
                                         
-                                        projectData.map((project, index) => (
+                                        departmentData.map((department, index) => (
                                         
                                             <tr
-                                                key={project.id}
+                                                key={department.id}
                                                 className='bg-white leading-[50px] text-gray-700'
                                             >
                                         
@@ -693,25 +669,21 @@ const AdminManageProjects = () => {
                                                     className='px-5'
                                                 >{(page * pageSize) + (index + 1)}</td>
 
-                                                <td className='px-5'>{project.projectName}</td>
+                                                <td className='px-5'>{department.departmentName}</td>
                                         
-                                                <td
-                                                    className='w-[300px] flex overflow-hidden mb-3'
-                                                >{project.projectDescription}</td>
-                                        
-                                                <td className='px-5'>{new Date(project.projectCreatedOn).toLocaleString()}</td>
+                                                <td className='px-5'>{new Date(department.departmentCreatedOn).toLocaleString()}</td>
                                         
                                                 <td className='px-5 space-x-5 flex items-center'>
                                         
                                                     <span className="mt-2 relative">
                                                         <CiEdit
                                                             className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                            onMouseEnter={() => enableEditVisible(project.id)}
-                                                            onMouseLeave={() => disableEditVisible(project.id)}
-                                                            onClick={() => editButtonManageProject(project.id)}
+                                                            onMouseEnter={() => enableEditVisible(department.id)}
+                                                            onMouseLeave={() => disableEditVisible(department.id)}
+                                                            onClick={() => editButtonManageDepartment(department.id)}
                                                         />
                                                         
-                                                        {editButtonVisible[project.id] && (
+                                                        {editButtonVisible[department.id] && (
                                                             <span className="absolute left-[-30px] top-1 text-xs rounded-md px-1 py-1">
                                                                 Edit
                                                             </span>
@@ -722,12 +694,12 @@ const AdminManageProjects = () => {
                                                     <span className="mt-2 relative manageProjects">
                                                         <MdDeleteForever 
                                                             className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                            onMouseEnter={() => enableDeleteVisible(project.id)}
-                                                            onMouseLeave={() => disableDeleteVisible(project.id)}
-                                                            onClick={() => projectDeleteFunction(project.id)}
+                                                            onMouseEnter={() => enableDeleteVisible(department.id)}
+                                                            onMouseLeave={() => disableDeleteVisible(department.id)}
+                                                            onClick={() => DepartmentDeleteFunction(department.id)}
                                                         />
 
-                                                        {deleteButtonVisible[project.id] && (
+                                                        {deleteButtonVisible[department.id] && (
                                                             <span className="absolute right-[-50px] top-1 text-xs rounded-md px-1 py-1">
                                                                 Delete
                                                             </span>
@@ -746,7 +718,7 @@ const AdminManageProjects = () => {
 
                             </table>
 
-                            {projectData && projectData.length > 0 && (
+                            {departmentData && departmentData.length > 0 && (
 
                                 <div className="space-x-5 text-center text-gray-600">
                                     
@@ -784,4 +756,4 @@ const AdminManageProjects = () => {
 
 }
 
-export default AdminManageProjects
+export default AdminManageDepartments

@@ -1,10 +1,17 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin;
 
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDepartmentNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDesignationNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AdminProfileModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureDepartments;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureDesignations;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureProjects;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureDepartmentsRepo;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureDesignationsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
@@ -35,6 +42,10 @@ public class AdminService {
     private final AccentureUserRepo accentureUserRepo;
 
     private final AccentureProjectsRepo accentureProjectsRepo;
+
+    private final AccentureDepartmentsRepo accentureDepartmentsRepo;
+
+    private final AccentureDesignationsRepo accentureDesignationsRepo;
 
     @Value("${cloud.aws.keys.accenture.bucket-name}")
     private String bucketName;
@@ -327,14 +338,230 @@ public class AdminService {
         s3.putObject(objectRequest, RequestBody.fromInputStream(updateImageSrc.getInputStream(), updateImageSrc.getSize()));
 
         accentureUser.setProfilePicUrl(fileName);
-        accentureUser.setFirstName(firstName);
-        accentureUser.setLastName(lastName);
-        accentureUser.setAbout(about);
-        accentureUser.setWhatILoveAboutMyJob(whatILoveAboutMyJob);
+
+        if ( firstName != null ){
+
+            accentureUser.setFirstName(firstName);
+
+        }
+
+        if ( lastName != null ){
+
+            accentureUser.setLastName(lastName);
+
+        }
+
+        if ( about != null ){
+
+            accentureUser.setAbout(about);
+
+        }
+
+        if ( whatILoveAboutMyJob != null ){
+
+            accentureUser.setWhatILoveAboutMyJob(whatILoveAboutMyJob);
+
+        }
 
         accentureUserRepo.save(accentureUser);
 
         return "User Updated Successfully" + fileName;
+
+    }
+
+    public AdminProfileModel fetchUserDetails(HttpServletRequest request) {
+
+        String jwtToken = request.getHeader("Authorization").substring(7);
+
+        String userEmail = jwtService.extractUserName(jwtToken);
+
+        AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findByUserEmail(userEmail).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found")
+        );
+
+        AdminProfileModel adminProfileModel = new AdminProfileModel();
+
+        BeanUtils.copyProperties(fetchedAccentureUser, adminProfileModel);
+
+        return adminProfileModel;
+
+    }
+
+    public List<FetchAllDepartmentsResponseModel> fetchAllDepartments(int pageNumber, int pageSize) {
+
+        List<FetchAllDepartmentsResponseModel> fetchedDepartments = accentureDepartmentsRepo.findAll()
+                .stream()
+                .sorted(Comparator.comparing(AccentureDepartments::getDepartmentCreatedOn).reversed())
+                .map(department -> {
+
+                    FetchAllDepartmentsResponseModel departmentsResponseModel = new FetchAllDepartmentsResponseModel();
+
+                    BeanUtils.copyProperties(department, departmentsResponseModel);
+
+                    return departmentsResponseModel;
+
+                })
+                .toList();
+
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, fetchedDepartments.size());
+
+        // If start index is beyond the size of the list, return an empty list
+        if (start >= fetchedDepartments.size()) {
+            return new ArrayList<>(); // Return an empty list if no data for the requested page
+        }
+
+        return fetchedDepartments.subList(start, end);
+
+    }
+
+    public String addDepartment(String departmentName) {
+
+        AccentureDepartments newDepartment = new AccentureDepartments();
+
+        newDepartment.setDepartmentName(departmentName);
+        newDepartment.setDepartmentCreatedOn(new Date(System.currentTimeMillis()));
+
+        accentureDepartmentsRepo.save(newDepartment);
+
+        return "Department Saved";
+
+    }
+
+    public String deleteDepartmentById(Long departmentId) {
+
+        accentureDepartmentsRepo.deleteById(departmentId);
+
+        return "Department Deleted";
+
+    }
+
+    public FetchAllDepartmentsResponseModel getDepartmentById(Long departmentId) throws AccentureDepartmentNotFoundException {
+
+        return accentureDepartmentsRepo.findById(departmentId)
+                .map(department -> {
+
+                    FetchAllDepartmentsResponseModel department1 = new FetchAllDepartmentsResponseModel();
+
+                    department1.setId(department.getId());
+                    department1.setDepartmentName(department.getDepartmentName());
+                    department1.setDepartmentCreatedOn(department.getDepartmentCreatedOn());
+
+                    return department1;
+
+                })
+                .orElseThrow(
+                () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
+        );
+
+    }
+
+    public String updateDepartmentById(Long departmentId, String departmentName) throws AccentureDepartmentNotFoundException {
+
+        AccentureDepartments fetchedDepartment = accentureDepartmentsRepo.findById(departmentId).orElseThrow(
+                () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
+        );
+
+        System.out.println("Department Name : " + departmentName);
+
+        if (departmentName != null ){
+
+            fetchedDepartment.setDepartmentName(departmentName);
+
+        }
+
+        accentureDepartmentsRepo.save(fetchedDepartment);
+
+        return "Department Updated";
+
+    }
+
+    public List<AdminDesignationResponseModel> fetchAllDesignations(int pageNumber, int pageSize) {
+
+        List<AdminDesignationResponseModel> fetchedDesignations = accentureDesignationsRepo.findAll()
+                .stream()
+                .sorted(Comparator.comparing(AccentureDesignations::getDesignationCreatedOn).reversed())
+                .map(department -> {
+
+                    AdminDesignationResponseModel departmentsResponseModel = new AdminDesignationResponseModel();
+
+                    BeanUtils.copyProperties(department, departmentsResponseModel);
+
+                    return departmentsResponseModel;
+
+                })
+                .toList();
+
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, fetchedDesignations.size());
+
+        // If start index is beyond the size of the list, return an empty list
+        if (start >= fetchedDesignations.size()) {
+            return new ArrayList<>(); // Return an empty list if no data for the requested page
+        }
+
+        return fetchedDesignations.subList(start, end);
+
+    }
+
+    public String addDesignation(String designationName) {
+
+        AccentureDesignations newDesignation = new AccentureDesignations();
+
+        newDesignation.setDesignationName(designationName);
+        newDesignation.setDesignationCreatedOn(new Date(System.currentTimeMillis()));
+
+        accentureDesignationsRepo.save(newDesignation);
+
+        return "Designation Saved";
+
+    }
+
+    public String deleteDesignationById(Long designationId) {
+
+        accentureDesignationsRepo.deleteById(designationId);
+
+        return "Designation Deleted";
+
+    }
+
+    public AdminDesignationResponseModel getDesignationById(Long designationId) throws AccentureDesignationNotFoundException {
+
+        return accentureDesignationsRepo.findById(designationId)
+                .map(designation -> {
+
+                    AdminDesignationResponseModel designation1 = new AdminDesignationResponseModel();
+
+                    designation1.setId(designation.getId());
+                    designation1.setDesignationName(designation.getDesignationName());
+                    designation1.setDesignationCreatedOn(designation.getDesignationCreatedOn());
+
+                    return designation1;
+
+                })
+                .orElseThrow(
+                        () -> new AccentureDesignationNotFoundException("Accenture Department Not Found")
+                );
+
+    }
+
+    public String updateDesignationById(Long designationId, String designationName) throws AccentureDesignationNotFoundException {
+
+        AccentureDesignations fetchedDesignation = accentureDesignationsRepo.findById(designationId).orElseThrow(
+                () -> new AccentureDesignationNotFoundException("Accenture Department Not Found")
+        );
+
+        System.out.println("Department Name : " + designationName);
+
+        if (designationName != null ){
+
+            fetchedDesignation.setDesignationName(designationName);
+
+        }
+
+        accentureDesignationsRepo.save(fetchedDesignation);
+
+        return "Department Updated";
 
     }
 

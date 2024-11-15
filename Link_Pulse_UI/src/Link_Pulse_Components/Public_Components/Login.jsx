@@ -158,7 +158,7 @@ const Login = () => {
 
                             <input 
                                 required
-                                className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
+                                className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
                                 placeholder='Org Domain'
                                 name='subDomain'
                                 value={credentials.subDomain}
@@ -184,7 +184,7 @@ const Login = () => {
                             <input 
                                 type='email'
                                 placeholder='Email'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.userEmail}
                                 name='userEmail'
                                 onChange={(e) => updateForm(e)}
@@ -203,7 +203,7 @@ const Login = () => {
                             <input 
                                 type='password'
                                 placeholder='Password'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.userPassword}
                                 name='userPassword'
                                 onChange={(e) => updateForm(e)}

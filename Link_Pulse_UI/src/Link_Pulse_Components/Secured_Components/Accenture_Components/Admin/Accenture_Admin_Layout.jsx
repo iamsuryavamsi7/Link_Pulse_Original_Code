@@ -11,7 +11,7 @@ const Accenture_Admin_Layout = () => {
         
             <NavBar />
             <AdminLeftNavBar />
-            <div className="pl-[265px] pt-[120px] w-full">
+            <div className="pl-[265px] pt-[100px] w-full">
 
                 <Outlet />
 

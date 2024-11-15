@@ -163,7 +163,7 @@ const Register = () => {
 
                             <input 
                                 required
-                                className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
+                                className='border-2 border-gray-300 ml-20 w-full leading-[30px] text-[14px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:ml-10'
                                 placeholder='Org Domain'
                                 name = 'subDomain'
                                 value={credentials.subDomain}
@@ -173,7 +173,7 @@ const Register = () => {
                             <input
                                 disabled
                                 value={".linkpulse.in"}
-                                className='border-2 border-gray-300 bg-gray-100 mr-20 w-full leading-[30px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3 max-sm:mr-10'
+                                className='border-2 border-gray-300 bg-gray-100 mr-20 w-full leading-[30px] text-[14px] mt-1 focus:outline-none focus:ring-0 transition-all px-3 max-sm:mr-10'
                             />
                         
                         </div>
@@ -193,7 +193,7 @@ const Register = () => {
                                 name='firstName'
                                 onChange={(e) => updateForm(e)}
                                 placeholder='First Name'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[14px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[14px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                             />
 
                         </div>
@@ -210,7 +210,7 @@ const Register = () => {
                                 required
                                 type='text'
                                 placeholder='Last name'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.lastName}
                                 name='lastName'
                                 onChange={(e) => updateForm(e)}
@@ -230,7 +230,7 @@ const Register = () => {
                                 required
                                 type='email'
                                 placeholder='Email'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.userEmail}
                                 name='userEmail'
                                 onChange={(e) => updateForm(e)}
@@ -250,7 +250,7 @@ const Register = () => {
                                 required
                                 type='password'
                                 placeholder='Password'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.userPassword}
                                 name='userPassword'
                                 onChange={(e) => updateForm(e)}
@@ -270,7 +270,7 @@ const Register = () => {
                                 required
                                 type='password'
                                 placeholder='Conform Password'
-                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 mb-3 hover:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
+                                className='border-2 border-gray-300 w-full mx-20 max-sm:mx-10 leading-[40px] text-[15px] mt-1 mb-3 focus:border-[#66B2FF] focus:outline-none focus:ring-0 transition-all px-3'
                                 value={credentials.conformUserPassword}
                                 name='conformUserPassword'
                                 onChange={(e) => updateForm(e)}
