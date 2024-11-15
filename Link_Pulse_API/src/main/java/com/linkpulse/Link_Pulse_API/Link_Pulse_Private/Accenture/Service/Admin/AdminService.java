@@ -14,10 +14,13 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import software.amazon.awssdk.core.ResponseInputStream;
+import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
 import software.amazon.awssdk.services.s3.model.GetObjectRequest;
 import software.amazon.awssdk.services.s3.model.GetObjectResponse;
+import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -293,6 +296,45 @@ public class AdminService {
         );
 
         return fetchedProject.getProjectManager() != null;
+
+    }
+
+    public String updateProfileData(MultipartFile updateImageSrc, String firstName, String lastName, String about, String whatILoveAboutMyJob, HttpServletRequest request) throws IOException {
+
+        String jwtToken = request.getHeader("Authorization").substring(7);
+
+        String userEmail = jwtService.extractUserName(jwtToken);
+
+        AccentureUserEntity accentureUser = accentureUserRepo.findByUserEmail(userEmail).orElseThrow(
+                () -> new UsernameNotFoundException("User Not Found")
+        );
+
+        String originalFileName = updateImageSrc.getOriginalFilename();
+
+        if ( originalFileName != null){
+
+            originalFileName = originalFileName.replace(" ", "_");
+
+        }
+
+        String fileName = System.currentTimeMillis() + "_" + originalFileName;
+
+        PutObjectRequest objectRequest = PutObjectRequest.builder()
+                .bucket(bucketName)
+                .key(fileName)
+                .build();
+
+        s3.putObject(objectRequest, RequestBody.fromInputStream(updateImageSrc.getInputStream(), updateImageSrc.getSize()));
+
+        accentureUser.setProfilePicUrl(fileName);
+        accentureUser.setFirstName(firstName);
+        accentureUser.setLastName(lastName);
+        accentureUser.setAbout(about);
+        accentureUser.setWhatILoveAboutMyJob(whatILoveAboutMyJob);
+
+        accentureUserRepo.save(accentureUser);
+
+        return "User Updated Successfully" + fileName;
 
     }
 

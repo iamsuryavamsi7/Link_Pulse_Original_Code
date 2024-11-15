@@ -1,20 +1,23 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Admin;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Helper.MediaTypeResolver;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin.AdminService;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -27,8 +30,6 @@ public class AdminController {
     private final JwtService jwtService;
 
     private final AccentureUserRepo accentureUserRepo;
-
-    private final AccentureProjectsRepo accentureProjectsRepo;
 
     @GetMapping("/fetchUserObject")
     public ResponseEntity<AdminNavBarUserObjectModel> fetchUserObject(
@@ -65,9 +66,10 @@ public class AdminController {
 
         String fileName = fetchedUser.getProfilePicUrl() != null ? fetchedUser.getProfilePicUrl() : "No Profile Picture Found";
 
+        MediaType mediaType = MediaTypeResolver.resolveMediaType(fileName); // Use the helper method
+
         return ResponseEntity.ok()
-                .header("Content-Disposition", "attachment; filename=\"" + fileName + "\"")
-                .contentLength(fetchedImage.length)
+                .contentType(mediaType)
                 .body(fetchedImage);
 
     }
@@ -181,6 +183,22 @@ public class AdminController {
         Boolean booleanValue = adminService.checkIfProjectManagerIsAlreadyAssigned(projectId);
 
         return ResponseEntity.ok(booleanValue);
+
+    }
+
+    @PostMapping("/updateProfileData")
+    public ResponseEntity<String> updateProfileData(
+            @RequestParam(value = "updateImageSrc", required = false) MultipartFile updateImageSrc,
+            @RequestParam("firstName") String firstName,
+            @RequestParam("lastName") String lastName,
+            @RequestParam("about") String about,
+            @RequestParam("whatILoveAboutMyJob") String whatILoveAboutMyJob,
+            HttpServletRequest request
+    ) throws IOException {
+
+        String successMessage = adminService.updateProfileData(updateImageSrc, firstName, lastName, about, whatILoveAboutMyJob, request);
+
+        return ResponseEntity.ok(successMessage);
 
     }
 

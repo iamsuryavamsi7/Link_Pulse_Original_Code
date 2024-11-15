@@ -17,7 +17,7 @@ public class S3Config {
     @Value("${cloud.aws.keys.accenture.secret-key}")
     private String secretKey;
 
-    @Value("${cloud.aws.keys.accenture.bucket-name}")
+    @Value("${cloud.aws.region}")
     private String region;
 
     @Bean

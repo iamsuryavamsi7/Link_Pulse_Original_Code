@@ -40,6 +40,8 @@ public class AccentureProjects {
     @NotNull
     private boolean projectCompleted;
 
+    private String clientName;
+
     // Project - multiple projects for one project manager
     @ManyToOne
     @JoinColumn(

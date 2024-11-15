@@ -29,9 +29,9 @@ cloud:
     region: ap-south-1
     keys:
       accenture:
-        access-key: AKIA3DQFZSRKJ3JPHZSEXXXXXX
-        secret-key: 1SKIMx55raAvoyA4ZSgWu/M+TCz/NCunkgpe+UUVXXXXXX
-        bucket-name: link-pulse-testing-bucketXXXXXX
+        access-key: AKIA3DQFZSRKOUSBOVMU
+        secret-key: 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
+        bucket-name: link-pulse-testing-bucket
 
 # Values for JwtService
 

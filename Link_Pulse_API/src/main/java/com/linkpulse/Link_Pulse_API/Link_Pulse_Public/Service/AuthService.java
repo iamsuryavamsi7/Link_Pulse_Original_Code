@@ -71,7 +71,7 @@ public class AuthService {
                 // Run the email sending function with threads
                 new Thread(() -> {
 
-                    emailSenderService.sendRegistrationEmail(accentureUser.getUserEmail());
+                    emailSenderService.sendRegistrationEmailAccenture(accentureUser.getUserEmail());
 
                 }).start();
 
