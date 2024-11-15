@@ -3,7 +3,6 @@ package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Adm
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin.AdminService;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureProjects;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;

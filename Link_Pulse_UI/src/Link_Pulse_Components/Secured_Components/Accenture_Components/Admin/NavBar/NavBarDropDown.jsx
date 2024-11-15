@@ -6,11 +6,15 @@ import { MdDarkMode } from 'react-icons/md'
 import Cookies from 'js-cookie'
 import axios from 'axios'
 import {toast, Toaster} from 'react-hot-toast'
+import { useNavigate } from 'react-router-dom'
 
-const NavBarDropDown = ({userObject, imageSrc}) => {
+const NavBarDropDown = ({userObject, imageSrc, closeProfileView}) => {
 
     // Jwt Token
     const access_token = Cookies.get('accenture_access_token');
+
+    // useNavigate Hook
+    const navigate = useNavigate();
 
     // Common function to handle error
     const handleFetchError = (error) => {
@@ -149,6 +153,13 @@ const NavBarDropDown = ({userObject, imageSrc}) => {
 
                     <li
                         className='flex items-center space-x-2 w-full py-3 min-w-[300px] hover:bg-gray-200 transition-all duration-300 px-5 rounded-xl active:opacity-[0.6] cursor-pointer'
+                        onClick={() => {
+                            
+                            closeProfileView();
+                            
+                            navigate(`/admin-profile-page`);
+                        
+                        }}
                     > 
 
                         <div className="">

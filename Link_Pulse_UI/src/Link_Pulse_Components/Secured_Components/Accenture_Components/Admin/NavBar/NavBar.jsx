@@ -10,7 +10,7 @@ import { Toaster, toast } from 'react-hot-toast'
 
 const NavBar = () => {
 
-    // JWT_TOKEN
+    // JWT_TOKEN 
     const access_token = Cookies.get('accenture_access_token');
 
     const [userObject, setUserObject] = useState([]);
@@ -228,7 +228,13 @@ const NavBar = () => {
         }
 
     }
+    
+    // Function to close profile nav bar
+    const profileViewFunction = () => {
 
+        setProfileViewTurnedOn(false);
+
+    }
 
     // UseEffect Hook
 
@@ -377,6 +383,7 @@ const NavBar = () => {
                         <NavBarDropDown 
                             userObject = {userObject}
                             imageSrc = {imageSrc}
+                            closeProfileView = {profileViewFunction}
                         />
 
                     )}
