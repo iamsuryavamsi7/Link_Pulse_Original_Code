@@ -14,12 +14,12 @@ const AdminManageDesignations = () => {
     const access_token = Cookies.get('accenture_access_token');
 
     // Role to store the data
-    const [role, setRole] = useState();
+    const [role, setRole] = useState(``);
 
     // Admin role value
     const admin = 'ADMIN';
 
-    const [designationData, setDesignationData] = useState();
+    const [designationData, setDesignationData] = useState(``);
 
     const [showAddProject, setShowAddDepartment] = useState(false);
 
@@ -133,9 +133,14 @@ const AdminManageDesignations = () => {
     // State to store edit projects form details
     const [formData, setFormData] = useState({
         id: "",
+        designationName: "",
         departmentName: "",
         departmentCreatedOn: "",
+        departmentId: ''
     });
+
+    // State to store the departments
+    const [departments, setDepartments] = useState([]);
 
     // State to activate and deactive edit mode
     const [editMode, setEditMode] = useState(false);
@@ -317,7 +322,9 @@ const AdminManageDesignations = () => {
 
                 setFormData(responseData);
 
-                console.log(responseData);
+                const departments = responseData.departments;
+
+                setDepartments(departments);
 
             }
 
@@ -344,13 +351,15 @@ const AdminManageDesignations = () => {
         e.preventDefault();
 
         const designationId = formData.id;
-        const designationName = formData.departmentName;
+        const designationName = formData.designationName;
+        const departmentId = formData.departmentId;
 
-        if ( departmentName !== '' && departmentName !== null ){
+        if ( designationId !== '' || designationName !== '' || departmentId !== '' ){
 
             const formDataDto = new FormData();
 
             formDataDto.append('designationName', designationName);
+            formDataDto.append('departmentId', departmentId)
 
             try{
 
@@ -366,7 +375,7 @@ const AdminManageDesignations = () => {
                         duration: 1000
                     })
 
-                    fetchDepartmentsData();
+                    fetchDesignations();
 
                     setEditMode(false);
 
@@ -389,7 +398,7 @@ const AdminManageDesignations = () => {
     }
 
     // Function to fetch all departments
-    const fetchDepartmentsData = async () => {
+    const fetchDesignations = async () => {
 
         try{
 
@@ -402,8 +411,6 @@ const AdminManageDesignations = () => {
             if ( response.status === 200 ){
 
                 setDesignationData(response.data);
-
-                console.log(response.data);
 
             }
 
@@ -450,7 +457,7 @@ const AdminManageDesignations = () => {
 
     useEffect(() => {
 
-        fetchDepartmentsData();
+        fetchDesignations();
 
     }, [page]);
 
@@ -495,17 +502,54 @@ const AdminManageDesignations = () => {
                                     <input 
                                         type='text'
                                         className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
-                                        name='departmentName'
-                                        value={formData.departmentName}
-                                        onChange={(e) => handleOnChangeFunction2(e)}
+                                        name='designationName'
+                                        value={formData.designationName}
+                                        onChange={handleOnChangeFunction2}
                                     />
+
+                                </div>
+
+                                <div className="">
+
+                                    <label className='text-gray-600'> Department name <span className='text-red-500'>*</span> </label><br />
+
+                                    <select 
+                                        type='text'
+                                        className='focus:outline-none border-2 focus:border-sky-300 bg-white rounded-lg px-3 h-[35px] mt-2 w-full cursor-pointer'
+                                        onChange={(e) => {
+
+                                            const deprtmentId = e.target.value;
+
+                                            setFormData(
+                                                {...formData, departmentId: deprtmentId}
+                                            );
+
+                                        }}
+                                    >
+
+                                        <option>Select Department</option>
+
+                                        {departments && departments.length > 0 && departments.map((department) => {
+
+                                            return (
+
+                                                <option 
+                                                    key={department.id}
+                                                    value={department.id}
+                                                >{department.departmentName}</option>
+
+                                            );
+
+                                        })}
+
+                                    </select>
 
                                 </div>
 
                                 <div className="flex">
 
                                     <button
-                                        className='bg-customBlueLinkPulseBase text-white focus:outline-none font-semibold mx-3 px-2 py-1 rounded-md text-lg hover:opacity-60 active:opacity-80'
+                                        className='bg-customBlueLinkPulseBase text-white font-semibold mx-3 px-2 py-1 rounded-md text-lg hover:opacity-60 active:opacity-80'
                                         type='submit'
                                     >Save</button>
 
@@ -619,6 +663,9 @@ const AdminManageDesignations = () => {
                                         >Designation Name</th>
                                         <th
                                             className='px-5'
+                                        >Department Name</th>
+                                        <th
+                                            className='px-5'
                                         >Created On</th>
                                         <th
                                             className='px-8'
@@ -636,6 +683,9 @@ const AdminManageDesignations = () => {
                                             className='bg-white text-black shadow-lg leading-[50px]'
                                         >
 
+                                            <td
+                                                className='px-5'
+                                            >No Data Found</td>
                                             <td
                                                 className='px-5'
                                             >No Data Found</td>
@@ -672,6 +722,16 @@ const AdminManageDesignations = () => {
                                                 >{(page * pageSize) + (index + 1)}</td>
 
                                                 <td className='px-5'>{department.designationName}</td>
+
+                                                <td className='px-5'>{department.departmentName ? (
+                                                    
+                                                    department.departmentName
+
+                                                ) : (
+
+                                                    <span>No Data</span>
+
+                                                )}</td>
                                         
                                                 <td className='px-5'>{new Date(department.designationCreatedOn).toLocaleString()}</td>
                                         

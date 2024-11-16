@@ -215,6 +215,7 @@ public class AdminController {
 
     }
 
+    // APIs for Department
     @GetMapping("/fetchAllDepartments/{pageNumber}/{pageSize}")
     public ResponseEntity<List<FetchAllDepartmentsResponseModel>> fetchAllDepartments(
             @PathVariable("pageNumber") int pageNumber,
@@ -272,17 +273,7 @@ public class AdminController {
 
     }
 
-
-
-
-
-
-
-
-
-
-
-
+    // APIs for Designation
     @GetMapping("/fetchAllDesignations/{pageNumber}/{pageSize}")
     public ResponseEntity<List<AdminDesignationResponseModel>> fetchAllDesignations(
             @PathVariable("pageNumber") int pageNumber,
@@ -318,23 +309,26 @@ public class AdminController {
     }
 
     @GetMapping("/getDesignationById/{designationId}")
-    public ResponseEntity<AdminDesignationResponseModel> getDesignationById(
+    public ResponseEntity<AdminDesignationWithListOfDepartmentsResponseModel> getDesignationById(
             @PathVariable("designationId") Long designationId
     ) throws AccentureDesignationNotFoundException {
 
-        AdminDesignationResponseModel fetchedDepartment = adminService.getDesignationById(designationId);
+        AdminDesignationWithListOfDepartmentsResponseModel fetchedDesignations = adminService.getDesignationById(designationId);
 
-        return ResponseEntity.ok(fetchedDepartment);
+        return ResponseEntity.ok(fetchedDesignations);
 
     }
 
     @PutMapping("/updateDesignationById/{designationId}")
     public ResponseEntity<String> updateDesignationById(
-            @PathVariable("designationId") Long designationId,
-            @RequestParam("designationName") String designationName
-    ) throws AccentureDesignationNotFoundException {
+            @PathVariable(value = "designationId", required = false) Long designationId,
+            @RequestParam(value = "designationName", required = false) String designationName,
+            @RequestParam(value = "departmentId", required = false) Long departmentId
+    ) throws AccentureDesignationNotFoundException, AccentureDepartmentNotFoundException {
 
-        String successMessage = adminService.updateDesignationById(designationId, designationName);
+        System.out.println("Designation ID : " + designationId + ", Department Name : " + designationName + ", Department ID : " + departmentId);
+
+        String successMessage = adminService.updateDesignationById(designationId, designationName, departmentId);
 
         return ResponseEntity.ok(successMessage);
 

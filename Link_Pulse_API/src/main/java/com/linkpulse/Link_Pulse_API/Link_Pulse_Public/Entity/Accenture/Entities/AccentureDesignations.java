@@ -1,5 +1,6 @@
 package com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,5 +27,13 @@ public class AccentureDesignations {
     private Long id;
     private String designationName;
     private Date designationCreatedOn;
+
+    // Designation - multiple designations for one department
+    @ManyToOne
+    @JoinColumn(
+            name = "department_id"
+    )
+    @JsonBackReference
+    private AccentureDepartments department;
 
 }

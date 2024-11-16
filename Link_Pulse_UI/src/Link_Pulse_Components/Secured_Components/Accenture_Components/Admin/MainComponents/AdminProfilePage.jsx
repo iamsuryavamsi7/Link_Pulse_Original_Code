@@ -472,10 +472,10 @@ const AdminProfilePage = () => {
 
                     {editModeActivated && (
 
-                        <div className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center">
+                        <div className="absolute top-0 right-0 left-0 bottom-0 flex justify-center items-center backdrop-blur-sm">
 
                             <form   
-                                className="relative bg-white border-[1px] border-gray-200 p-7 rounded-md w-[400px]"
+                                className="relative bg-white border-[1px] border-gray-200 p-7 rounded-md w-[600px]"
                                 onSubmit={editProfileFormFunction}    
                             > 
 

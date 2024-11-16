@@ -462,6 +462,7 @@ const AdminEmployeeApproval = () => {
                                         <th>Email</th>
                                         <th>Projects</th>
                                         <th>Roles</th>
+                                        <th>Department</th>
                                         <th>Designation</th>
                                         <th>Actions</th>
                                     </tr>
@@ -483,7 +484,7 @@ const AdminEmployeeApproval = () => {
                                                 <td>
                                                     
                                                     <select
-                                                        className='focus:outline-none bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
+                                                        className='bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
                                                         onChange={projectIdOnChangeFunction}  
                                                     >
                                                         <option>Select Project</option>
@@ -502,7 +503,7 @@ const AdminEmployeeApproval = () => {
                                                 </td>
                                                 <td>
                                                     <select
-                                                        className='focus:outline-none bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
+                                                        className='bg-gray-200 px-2 py-1 rounded-lg cursor-pointer'
                                                         onChange={selectRoleOnChangeFunction}
                                                     >
                                                         <option>Select Role</option>
@@ -527,12 +528,29 @@ const AdminEmployeeApproval = () => {
                                                     </select>
                                                 </td>
                                                 <td>
-                                                    <input
+                                                    <select
                                                         type="text"
-                                                        className="leading-7 rounded-sm focus:outline-none border-[1px] border-gray-500 px-2"
+                                                        className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer"
                                                         onChange={designationOnChangeFunction}
-                                                    />
+                                                    >
+
+                                                        <option>Select Department</option>
+
+                                                    </select>
                                                 </td>
+
+                                                <td>
+                                                    <select
+                                                        type="text"
+                                                        className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer"
+                                                        onChange={designationOnChangeFunction}
+                                                    >
+
+                                                        <option>Select Designation</option>
+
+                                                    </select>
+                                                </td>
+
                                                 <td className="flex items-center space-x-3 pt-3">
                                                     <SiTicktick
                                                         className="text-xl cursor-pointer hover:opacity-50 active:opacity-80"
@@ -556,6 +574,7 @@ const AdminEmployeeApproval = () => {
                                             <td
                                                 className='px-10'
                                             >No Data</td>
+                                            <td>No Data</td>
                                             <td>No Data</td>
                                             <td>No Data</td>
                                             <td>No Data</td>

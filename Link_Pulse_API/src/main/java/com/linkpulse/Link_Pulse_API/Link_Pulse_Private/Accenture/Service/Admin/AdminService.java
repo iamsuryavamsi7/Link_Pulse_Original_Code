@@ -481,11 +481,19 @@ public class AdminService {
         List<AdminDesignationResponseModel> fetchedDesignations = accentureDesignationsRepo.findAll()
                 .stream()
                 .sorted(Comparator.comparing(AccentureDesignations::getDesignationCreatedOn).reversed())
-                .map(department -> {
+                .map(designation -> {
 
                     AdminDesignationResponseModel departmentsResponseModel = new AdminDesignationResponseModel();
 
-                    BeanUtils.copyProperties(department, departmentsResponseModel);
+                    BeanUtils.copyProperties(designation, departmentsResponseModel);
+
+                    if ( designation.getDepartment() != null ){
+
+                        AccentureDepartments department = designation.getDepartment();
+
+                        departmentsResponseModel.setDepartmentName(department.getDepartmentName());
+
+                    }
 
                     return departmentsResponseModel;
 
@@ -525,16 +533,38 @@ public class AdminService {
 
     }
 
-    public AdminDesignationResponseModel getDesignationById(Long designationId) throws AccentureDesignationNotFoundException {
+    public AdminDesignationWithListOfDepartmentsResponseModel getDesignationById(Long designationId) throws AccentureDesignationNotFoundException {
 
         return accentureDesignationsRepo.findById(designationId)
                 .map(designation -> {
 
-                    AdminDesignationResponseModel designation1 = new AdminDesignationResponseModel();
+                    AdminDesignationWithListOfDepartmentsResponseModel designation1 = new AdminDesignationWithListOfDepartmentsResponseModel();
 
                     designation1.setId(designation.getId());
                     designation1.setDesignationName(designation.getDesignationName());
                     designation1.setDesignationCreatedOn(designation.getDesignationCreatedOn());
+
+                    if ( designation.getDepartment() != null ){
+
+                        AccentureDepartments fetchedDepartment = designation.getDepartment();
+
+                        if ( fetchedDepartment.getId() != null ){
+
+                            designation1.setDepartmentId(fetchedDepartment.getId());
+
+                        }
+
+                        if ( fetchedDepartment.getDepartmentName() != null ){
+
+                            designation1.setDepartmentName(fetchedDepartment.getDepartmentName());
+
+                        }
+
+                    }
+
+                    List<AccentureDepartments> fetchedDepartments = accentureDepartmentsRepo.findAll();
+
+                    designation1.setDepartments(fetchedDepartments);
 
                     return designation1;
 
@@ -545,7 +575,7 @@ public class AdminService {
 
     }
 
-    public String updateDesignationById(Long designationId, String designationName) throws AccentureDesignationNotFoundException {
+    public String updateDesignationById(Long designationId, String designationName, Long departmentId) throws AccentureDesignationNotFoundException, AccentureDepartmentNotFoundException {
 
         AccentureDesignations fetchedDesignation = accentureDesignationsRepo.findById(designationId).orElseThrow(
                 () -> new AccentureDesignationNotFoundException("Accenture Department Not Found")
@@ -556,6 +586,16 @@ public class AdminService {
         if (designationName != null ){
 
             fetchedDesignation.setDesignationName(designationName);
+
+        }
+
+        if ( departmentId != null ){
+
+            AccentureDepartments fetchedDepartment = accentureDepartmentsRepo.findById(departmentId).orElseThrow(
+                    () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
+            );
+
+            fetchedDesignation.setDepartment(fetchedDepartment);
 
         }
 
