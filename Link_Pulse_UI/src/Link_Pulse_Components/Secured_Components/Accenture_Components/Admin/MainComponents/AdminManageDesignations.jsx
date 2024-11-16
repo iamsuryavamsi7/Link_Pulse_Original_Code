@@ -224,7 +224,7 @@ const AdminManageDesignations = () => {
 
             if ( response.status === 200 ){
 
-                fetchDepartmentsData();
+                fetchDesignations();
 
                 setDepartmentDetails({
                     departmentName: ""
@@ -285,17 +285,13 @@ const AdminManageDesignations = () => {
                     duration: 1000
                 });
 
-                fetchDepartmentsData();
+                fetchDesignations();
 
             }
 
         }catch(error){
 
-            if ( error.response.status === 403 ){
-
-                console.log(error.response.data);
-                
-            }
+            handleFetchError(error);
 
         }
 
@@ -354,42 +350,52 @@ const AdminManageDesignations = () => {
         const designationName = formData.designationName;
         const departmentId = formData.departmentId;
 
-        if ( designationId !== '' || designationName !== '' || departmentId !== '' ){
+        if ( departmentId != null ){
 
-            const formDataDto = new FormData();
+            if ( designationId !== '' || designationName !== '' || departmentId !== '' ){
 
-            formDataDto.append('designationName', designationName);
-            formDataDto.append('departmentId', departmentId)
-
-            try{
-
-                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateDesignationById/${designationId}`, formDataDto, {
-                    headers: {
-                        'Authorization': `Bearer ${access_token}`
-                    }
-                })
-
-                if ( response.status === 200 ){
-
-                    toast.success('Project Updated', {
-                        duration: 1000
+                const formDataDto = new FormData();
+    
+                formDataDto.append('designationName', designationName);
+                formDataDto.append('departmentId', departmentId)
+    
+                try{
+    
+                    const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateDesignationById/${designationId}`, formDataDto, {
+                        headers: {
+                            'Authorization': `Bearer ${access_token}`
+                        }
                     })
-
-                    fetchDesignations();
-
-                    setEditMode(false);
-
+    
+                    if ( response.status === 200 ){
+    
+                        toast.success('Project Updated', {
+                            duration: 1000
+                        })
+    
+                        fetchDesignations();
+    
+                        setEditMode(false);
+    
+                    }
+    
+                }catch(error){
+    
+                    handleFetchError(error);
+    
                 }
-
-            }catch(error){
-
-                handleFetchError(error);
-
+    
+            } else {
+    
+                toast.error(`Fill all fields`, {
+                    duration: 2000
+                });
+    
             }
 
-        } else {
+        }else {
 
-            toast.error(`Fill all fields`, {
+            toast.error('Select Department', {
                 duration: 2000
             });
 

@@ -277,21 +277,75 @@ const AdminEmployeeApproval = () => {
 
     }
 
-    // Function for storing employee designation in state
-    const designationOnChangeFunction = (e) => {
+    // State to hold the fetched departments
+    const [departments, setDepartments] = useState([]);
 
-        const designationValue = e.target.value;
+    // Function to fetch departments
+    const fetchDepartments = async () => {
 
-        setEmployeeDetails(
-            {...employeeDetails, designation: designationValue}
-        );
+        try{
+
+            const response = await axios.get('http://localhost:7777/api/v1/accenture-admin/fetchDepartments', {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            })
+
+            if ( response.status === 200 ){
+
+                const responseData = response.data;
+
+                console.log(responseData);
+
+                setDepartments(responseData);
+
+            }
+
+        }catch(error){
+
+            handleFetchError(error);
+
+        }
+
+    }
+
+    // State to hold the fetched designations
+    const [designations, setDesignations] = useState([]);
+
+    // Function to fetch designations
+    const fetchDesignations = async (id) => {
+
+        const departmentId = id;
+
+        try{
+
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchDesignationsByDepartmentId/${departmentId}`, {
+                headers: {
+                    Authorization: `Bearer ${access_token}`
+                }
+            })
+
+            if ( response.status === 200 ){
+
+                const responseData = response.data;
+
+                setDesignations(responseData);
+
+            }
+
+        }catch(error){
+
+            handleFetchError(error);
+
+        }
 
     }
 
     const [employeeDetails, setEmployeeDetails] = useState({
         projectId: '',
         role: '',
-        designation: ''
+        departmentId: '',
+        designationId: ''
     });
 
     // Function to accept users (Not Completed)
@@ -299,7 +353,7 @@ const AdminEmployeeApproval = () => {
 
         const userId = id;
 
-        if ( employeeDetails.projectId !== "" && employeeDetails.projectId !== "Select Project" && employeeDetails.role !==  "" && employeeDetails.role !== "Select Role" && employeeDetails.designation !== ""){
+        if ( employeeDetails.projectId !== '' && employeeDetails.projectId !== "Select Project" && employeeDetails.role !== '' && employeeDetails.role !== "Select Role" && employeeDetails.departmentId !== '' &&  employeeDetails.departmentId !== "Select Department" && employeeDetails.designationId !== '' && employeeDetails.designationId !== "Select Designation"){
 
             try{
 
@@ -406,6 +460,8 @@ const AdminEmployeeApproval = () => {
             fetchLockedUsers();
 
             fetchAllProjects();
+
+            fetchDepartments();
 
         }
 
@@ -531,10 +587,39 @@ const AdminEmployeeApproval = () => {
                                                     <select
                                                         type="text"
                                                         className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer"
-                                                        onChange={designationOnChangeFunction}
+                                                        onChange={(e) => {
+
+                                                            const departmentId = e.target.value;
+
+                                                            console.log(departmentId);
+
+                                                            setEmployeeDetails(
+                                                                {
+                                                                    ...employeeDetails, 
+                                                                    departmentId : departmentId,
+                                                                    designationId : 'Select Designation'
+                                                                }
+                                                            );
+
+                                                            fetchDesignations(departmentId);
+
+                                                        }}
                                                     >
 
                                                         <option>Select Department</option>
+
+                                                        {departments && departments.length > 0 && departments.map((department) => {
+
+                                                            return (
+
+                                                                <option
+                                                                    key={department.id}
+                                                                    value={department.id}
+                                                                > {department.departmentName} </option>
+
+                                                            );
+
+                                                        })}
 
                                                     </select>
                                                 </td>
@@ -543,10 +628,31 @@ const AdminEmployeeApproval = () => {
                                                     <select
                                                         type="text"
                                                         className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer"
-                                                        onChange={designationOnChangeFunction}
+                                                        onChange={(e) => {
+
+                                                            const designationId = e.target.value;
+
+                                                            setEmployeeDetails(
+                                                                {...employeeDetails, designationId : designationId}
+                                                            );
+
+                                                        }}
                                                     >
 
                                                         <option>Select Designation</option>
+
+                                                        {designations && designations.length > 0 && designations.map((designation) => {
+
+                                                            return (
+
+                                                                <option
+                                                                    key={designation.id}
+                                                                    value={designation.id}
+                                                                > {designation.designationName} </option>
+
+                                                            );
+
+                                                        })}
 
                                                     </select>
                                                 </td>

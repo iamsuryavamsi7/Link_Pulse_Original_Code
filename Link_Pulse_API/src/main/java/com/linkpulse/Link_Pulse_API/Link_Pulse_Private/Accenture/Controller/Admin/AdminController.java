@@ -158,7 +158,7 @@ public class AdminController {
     public ResponseEntity<String> acceptEmployeeById(
             @PathVariable("userId") Long userId,
             @Valid @RequestBody AcceptEmployeeByIdRequestModel requestModel
-    ) throws AccentureProjectNotFoundException {
+    ) throws AccentureProjectNotFoundException, AccentureDepartmentNotFoundException, AccentureDesignationNotFoundException {
 
         String successMessage = adminService.acceptEmployeeById(userId, requestModel);
 
@@ -331,6 +331,26 @@ public class AdminController {
         String successMessage = adminService.updateDesignationById(designationId, designationName, departmentId);
 
         return ResponseEntity.ok(successMessage);
+
+    }
+
+    @GetMapping("/fetchDepartments")
+    public ResponseEntity<List<AdminDepartmentsResponseModel>> fetchDepartments(){
+
+        List<AdminDepartmentsResponseModel> fetchedDepartments = adminService.fetchDepartments();
+
+        return ResponseEntity.ok(fetchedDepartments);
+
+    }
+
+    @GetMapping("/fetchDesignationsByDepartmentId/{departmentId}")
+    public ResponseEntity<List<AdminDesignationResponseModel>> fetchDesignationsByDepartmentId(
+            @PathVariable("departmentId") Long departmentId
+    ) throws AccentureDepartmentNotFoundException {
+
+        List<AdminDesignationResponseModel> fetchedDesignations = adminService.fetchDesignationsByDepartmentId(departmentId);
+
+        return ResponseEntity.ok(fetchedDesignations);
 
     }
 

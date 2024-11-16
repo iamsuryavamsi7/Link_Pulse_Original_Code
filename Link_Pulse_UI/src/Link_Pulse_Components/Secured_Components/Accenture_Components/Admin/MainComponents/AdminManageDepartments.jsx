@@ -503,7 +503,7 @@ const AdminManageDepartments = () => {
                                 <div className="flex">
 
                                     <button
-                                        className='bg-customBlueLinkPulseBase text-white focus:outline-none font-semibold mx-3 px-2 py-1 rounded-md text-lg hover:opacity-60 active:opacity-80'
+                                        className='bg-customBlueLinkPulseBase text-white font-semibold mx-3 px-2 py-1 rounded-md text-lg hover:opacity-60 active:opacity-80'
                                         type='submit'
                                     >Save</button>
 

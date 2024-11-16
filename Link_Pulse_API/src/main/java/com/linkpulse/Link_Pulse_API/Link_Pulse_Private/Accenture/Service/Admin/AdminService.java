@@ -249,7 +249,7 @@ public class AdminService {
 
     }
 
-    public String acceptEmployeeById(Long userId, AcceptEmployeeByIdRequestModel requestModel) throws AccentureProjectNotFoundException {
+    public String acceptEmployeeById(Long userId, AcceptEmployeeByIdRequestModel requestModel) throws AccentureProjectNotFoundException, AccentureDepartmentNotFoundException, AccentureDesignationNotFoundException {
 
         AccentureUserEntity fetchedAccentureUser = accentureUserRepo.findById(userId).orElseThrow(
                 () -> new UsernameNotFoundException("User Not Found")
@@ -259,8 +259,15 @@ public class AdminService {
                 () -> new AccentureProjectNotFoundException("Accenture Project Now Found")
         );
 
+        AccentureDepartments fetchedDepartment = accentureDepartmentsRepo.findById(requestModel.getDepartmentId()).orElseThrow(
+                () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
+        );
+
+        AccentureDesignations fetchedDesignation = accentureDesignationsRepo.findById(requestModel.getDesignationId()).orElseThrow(
+                () -> new AccentureDesignationNotFoundException("Accenture Designation Not Found")
+        );
+
         fetchedAccentureUser.setRole(requestModel.getRole());
-        fetchedAccentureUser.setDesignation(requestModel.getDesignation());
 
         if ( requestModel.getRole().equals(Role.PROJECTMANAGER) ){
 
@@ -281,6 +288,10 @@ public class AdminService {
             fetchedAccentureProject.getTeamMembers().add(fetchedAccentureUser);
 
         }
+
+        fetchedAccentureUser.setDesignation(fetchedDesignation.getDesignationName());
+
+        fetchedAccentureUser.setDepartment(fetchedDepartment.getDepartmentName());
 
         fetchedAccentureUser.setUserUnlocked(true);
 
@@ -602,6 +613,46 @@ public class AdminService {
         accentureDesignationsRepo.save(fetchedDesignation);
 
         return "Department Updated";
+
+    }
+
+    public List<AdminDepartmentsResponseModel> fetchDepartments() {
+
+        return accentureDepartmentsRepo.findAll()
+                .stream()
+                .sorted(Comparator.comparing(AccentureDepartments::getDepartmentCreatedOn).reversed())
+                .map(accentureDepartment -> {
+
+                    AdminDepartmentsResponseModel departmentResponseModel = new AdminDepartmentsResponseModel();
+
+                    BeanUtils.copyProperties(accentureDepartment, departmentResponseModel);
+
+                    return departmentResponseModel;
+
+                })
+                .toList();
+
+    }
+
+    public List<AdminDesignationResponseModel> fetchDesignationsByDepartmentId(Long departmentId) throws AccentureDepartmentNotFoundException {
+
+        AccentureDepartments fetchedDepartment = accentureDepartmentsRepo.findById(departmentId).orElseThrow(
+                () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
+        );
+
+        return fetchedDepartment.getDesignations()
+                .stream()
+                .sorted(Comparator.comparing(AccentureDesignations::getDesignationCreatedOn).reversed())
+                .map(designation -> {
+
+                    AdminDesignationResponseModel designation1 = new AdminDesignationResponseModel();
+
+                    BeanUtils.copyProperties(designation, designation1);
+
+                    return designation1;
+
+                })
+                .toList();
 
     }
 
