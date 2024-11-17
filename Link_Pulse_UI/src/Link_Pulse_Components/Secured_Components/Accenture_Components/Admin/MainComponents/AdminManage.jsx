@@ -133,7 +133,7 @@ const AdminManage = () => {
                     {isLocationManagePage && (
 
                         <MdOutlineArrowDropUp 
-                            className='absolute left-[120px] bottom-[-10px] text-customBlueLeftNavBar text-2xl'
+                            className='absolute left-[100px] bottom-[-10px] text-customBlueLeftNavBar text-2xl'
                         />
 
                     )}

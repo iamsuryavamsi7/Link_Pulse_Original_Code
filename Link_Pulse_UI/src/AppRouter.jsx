@@ -14,6 +14,7 @@ import AdminProfileJob from "./Link_Pulse_Components/Secured_Components/Accentur
 import AdminManage from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManage";
 import AdminManageDepartments from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageDepartments";
 import AdminManageDesignations from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageDesignations";
+import AdminManageLocation from "./Link_Pulse_Components/Secured_Components/Accenture_Components/Admin/MainComponents/AdminManageLocation";
 
 // Public Pages Router
 function AppRouter() {
@@ -55,6 +56,7 @@ function AccentureRouter() {
 						<Route path="/admin-manage-projects" element={<AdminManageProjects />}/>
 						<Route path="/admin-manage-departments" element={<AdminManageDepartments />}/>
 						<Route path="/admin-manage-designations" element={<AdminManageDesignations />}/>
+						<Route path="/admin-manage-locations" element={<AdminManageLocation />}/>
 					</Route>
 					<Route path="/admin-employee-approvals" element= {<AdminEmployeeApproval />}/>
 						

@@ -2,18 +2,13 @@ package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Service.Admin;
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDepartmentNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDesignationNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureLocationNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.AdminProfileModel;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureDepartments;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureDesignations;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureProjects;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.AccentureUserEntity;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Entities.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Entity.Accenture.Role.Role;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureDepartmentsRepo;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureDesignationsRepo;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureProjectsRepo;
-import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.AccentureUserRepo;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Repo.Accenture.*;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Public.Service.JwtService;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
@@ -46,6 +41,8 @@ public class AdminService {
     private final AccentureDepartmentsRepo accentureDepartmentsRepo;
 
     private final AccentureDesignationsRepo accentureDesignationsRepo;
+
+    private final AccentureLocationsRepo accentureLocationsRepo;
 
     @Value("${cloud.aws.keys.accenture.bucket-name}")
     private String bucketName;
@@ -473,15 +470,13 @@ public class AdminService {
                 () -> new AccentureDepartmentNotFoundException("Accenture Department Not Found")
         );
 
-        System.out.println("Department Name : " + departmentName);
-
         if (departmentName != null ){
 
             fetchedDepartment.setDepartmentName(departmentName);
 
-        }
+            accentureDepartmentsRepo.save(fetchedDepartment);
 
-        accentureDepartmentsRepo.save(fetchedDepartment);
+        }
 
         return "Department Updated";
 
@@ -653,6 +648,93 @@ public class AdminService {
 
                 })
                 .toList();
+
+    }
+
+    public List<AdminLocationsResponseModel> fetchAllLocations(int pageNumber, int pageSize) {
+
+        List<AdminLocationsResponseModel> fetchedLocations = accentureLocationsRepo.findAll()
+                .stream()
+                .sorted(Comparator.comparing(AccentureLocations::getLocationCreatedOn).reversed())
+                .map(location -> {
+
+                    AdminLocationsResponseModel location1 = new AdminLocationsResponseModel();
+
+                    BeanUtils.copyProperties(location, location1);
+
+                    return location1;
+
+                })
+                .toList();
+
+        int start = pageNumber * pageSize;
+        int end = Math.min(start + pageSize, fetchedLocations.size());
+
+        // If start index is beyond the size of the list, return an empty list
+        if (start >= fetchedLocations.size()) {
+            return new ArrayList<>(); // Return an empty list if no data for the requested page
+        }
+
+        return fetchedLocations.subList(start, end);
+
+    }
+
+    public String addLocation(String locationAddress) {
+
+        AccentureLocations newDepartment = new AccentureLocations();
+
+        newDepartment.setLocationAddress(locationAddress);
+        newDepartment.setLocationCreatedOn(new Date(System.currentTimeMillis()));
+
+        accentureLocationsRepo.save(newDepartment);
+
+        return "Department Saved";
+
+    }
+
+    public String deleteLocationById(Long locationId) {
+
+        accentureLocationsRepo.deleteById(locationId);
+
+        return "Department Deleted";
+
+    }
+
+    public AdminLocationsResponseModel getLocationById(Long locationId) throws AccentureLocationNotFoundException {
+
+        return accentureLocationsRepo.findById(locationId)
+                .map(location -> {
+
+                    AdminLocationsResponseModel department1 = new AdminLocationsResponseModel();
+
+                    department1.setId(location.getId());
+                    department1.setLocationAddress(location.getLocationAddress());
+                    department1.setLocationCreatedOn(location.getLocationCreatedOn());
+
+                    return department1;
+
+                })
+                .orElseThrow(
+                        () -> new AccentureLocationNotFoundException("Accenture Location Not Found")
+                );
+
+    }
+
+    public String updateLocationById(Long locationId, String locationAddress) throws AccentureLocationNotFoundException {
+
+        AccentureLocations fetchedLocation = accentureLocationsRepo.findById(locationId).orElseThrow(
+                () -> new AccentureLocationNotFoundException("Accenture Department Not Found")
+        );
+
+        if (locationAddress != null ){
+
+            fetchedLocation.setLocationAddress(locationAddress);
+
+            accentureLocationsRepo.save(fetchedLocation);
+
+        }
+
+        return "Department Updated";
 
     }
 

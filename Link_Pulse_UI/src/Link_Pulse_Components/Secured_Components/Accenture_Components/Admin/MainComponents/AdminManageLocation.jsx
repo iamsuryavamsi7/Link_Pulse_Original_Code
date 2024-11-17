@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from 'react'
-import Cookies from 'js-cookie';
-import axios from 'axios';
-import { CiEdit } from 'react-icons/ci';
-import { MdDeleteForever } from 'react-icons/md';
-import { Toaster, toast } from 'react-hot-toast'; 
+import Cookies from 'js-cookie'
+import { Toaster, toast } from 'react-hot-toast';
 import { Helmet } from 'react-helmet-async';
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
+import axios from 'axios';
 import { GoPlus } from 'react-icons/go';
+import { CiEdit } from 'react-icons/ci';
+import { MdDeleteForever } from 'react-icons/md';
 
-const AdminManageDepartments = () => {
+const AdminManageLocation = () => {
 
     // JWT_TOKEN
     const access_token = Cookies.get('accenture_access_token');
@@ -19,17 +19,12 @@ const AdminManageDepartments = () => {
     // Admin role value
     const admin = 'ADMIN';
 
-    const [departmentData, setDepartmentData] = useState();
-
-    const [showAddProject, setShowAddDepartment] = useState(false);
-
-    const [editButtonVisible, setEditButtonVisible] = useState({});
-
-    const [deleteButtonVisible, setDeleteButtonVisible] = useState({});
+    // State to activate and deactive edit mode
+    const [editMode, setEditMode] = useState(false);
 
     // default page number
     const [page, setPage] = useState(0); // Track the current page
-    
+
     // Default no of items for page
     const pageSize = 10; 
 
@@ -37,13 +32,13 @@ const AdminManageDepartments = () => {
     const [isLastPage, setIsLastPage] = useState(false); // 
 
     // Function for checking projects are available for next page
-    const checkIfDepartmentsAreAvailable = async (pageNumber) => {
+    const checkIfLocationsAreAvailable = async (pageNumber) => {
 
         const page = pageNumber;
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllProjects/${page}/${pageSize}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllLocations/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -80,7 +75,7 @@ const AdminManageDepartments = () => {
 
             const pageNumber = page + 1;
 
-            const response = await checkIfDepartmentsAreAvailable(pageNumber);
+            const response = await checkIfLocationsAreAvailable(pageNumber);
 
             if ( response ){
 
@@ -125,20 +120,18 @@ const AdminManageDepartments = () => {
 
     }
 
+    const [locationData, setLocationsData] = useState();
+
+    const [showAddLocation, setShowAddLocation] = useState(false);
+
+    const [editButtonVisible, setEditButtonVisible] = useState({});
+
+    const [deleteButtonVisible, setDeleteButtonVisible] = useState({});
+
     // State to store add projects form details
-    const [departmentDetails, setDepartmentDetails] = useState({
-        departmentName: ""
+    const [locationDetails, setLocationDetails] = useState({
+        locationAddress: ""
     });
-
-    // State to store edit projects form details
-    const [formData, setFormData] = useState({
-        id: "",
-        departmentName: "",
-        departmentCreatedOn: "",
-    });
-
-    // State to activate and deactive edit mode
-    const [editMode, setEditMode] = useState(false);
 
     // Functions to enable edit tooltip visibility
     const enableEditVisible = (id) => {
@@ -160,58 +153,12 @@ const AdminManageDepartments = () => {
         setDeleteButtonVisible((prev) => ({ ...prev, [id]: false }));
     };
 
-    // Common function to handle error
-    const handleFetchError = (error) => {
-
-        if ( error.response ) {
-
-            if ( error.response.status === 403 ){
-
-                console.log(error.response);
-
-                toast.error('Something went wrong', {
-                    duration: 2000
-                });
-
-            } else {
-
-                console.log(error);
-
-            }
-
-        } else {
-
-            console.error('Error fetching data', error);
-
-        }
-
-    }
-
-    // Function to show add deprtment option
-    const addDepartmentButtonFunction = () => {
-
-        if ( showAddProject ) {
-
-            setShowAddDepartment(false);
-
-        } else {
-
-            setShowAddDepartment(true);
-
-        }
-
-    }
-
-    // Function to add departments
-    const addDepartmentFunction = async () => {
-
-        const formData = new FormData();
-
-        formData.append('departmentName', departmentDetails.departmentName);
+    // Function to fetch all departments
+    const fetchLocationsData = async () => {
 
         try{
 
-            const response = await axios.post('http://localhost:7777/api/v1/accenture-admin/addDepartment', formData, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllLocations/${page}/${pageSize}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -219,15 +166,46 @@ const AdminManageDepartments = () => {
 
             if ( response.status === 200 ){
 
-                fetchDepartmentsData();
+                const responseData = response.data;
 
-                setDepartmentDetails({
-                    departmentName: ""
+                setLocationsData(responseData);
+
+            }
+
+        }catch(error){
+
+            handleFetchError(error);
+
+        }
+
+    }
+
+    // Function to add departments
+    const addLocationFunction = async () => {
+
+        const formData = new FormData();
+
+        formData.append('locationAddress', locationDetails.locationAddress);
+
+        try{
+
+            const response = await axios.post('http://localhost:7777/api/v1/accenture-admin/addLocation', formData, {
+                headers: {
+                    'Authorization': `Bearer ${access_token}`
+                }
+            })
+
+            if ( response.status === 200 ){
+
+                fetchLocationsData();
+
+                setLocationDetails({
+                    locationAddress: ""
                 });
 
-                setShowAddDepartment(false);
+                setShowAddLocation(false);
 
-                toast.success('Department Added Successful', {
+                toast.success('Location Added Successful', {
                     duration: 1000
                 });
 
@@ -248,7 +226,28 @@ const AdminManageDepartments = () => {
 
         const value = e.target.value;
 
-        setDepartmentDetails({...departmentDetails, [e.target.name]: value});
+        setLocationDetails({...locationDetails, [e.target.name]: value});
+
+    }
+
+    // State to store edit projects form details
+    const [formData, setFormData] = useState({
+        id: "",
+        locationAddress: "",
+    });
+
+    // Function to show add deprtment option
+    const addLocationButtonFunction = () => {
+
+        if ( showAddLocation ) {
+
+            setShowAddLocation(false);
+
+        } else {
+
+            setShowAddLocation(true);
+
+        }
 
     }
 
@@ -262,13 +261,13 @@ const AdminManageDepartments = () => {
     }
 
     // Function to delete project by id
-    const DepartmentDeleteFunction = async (id) => {
+    const LocationDeleteFunction = async (id) => {
 
-        const departmentId = id;
+        const locationId = id;
 
         try{
 
-            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteDepartmentById/${departmentId}`, {
+            const response = await axios.delete(`http://localhost:7777/api/v1/accenture-admin/deleteLocationById/${locationId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -276,11 +275,11 @@ const AdminManageDepartments = () => {
 
             if ( response.status === 200 ){
 
-                toast.success('Department Deleted Successfully', {
+                toast.success('Location Deleted Successfully', {
                     duration: 1000
                 });
 
-                fetchDepartmentsData();
+                fetchLocationsData();
 
             }
 
@@ -297,13 +296,13 @@ const AdminManageDepartments = () => {
     }
 
     // Function to fetch project data by id then enabling edit mode
-    const editButtonManageDepartment = async (id) => {
+    const editButtonManageLocation = async (id) => {
 
-        const departmentId = id;
+        const locationId = id;
 
         try{
 
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/getDepartmentById/${departmentId}`, {
+            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/getLocationById/${locationId}`, {
                 headers: {
                     'Authorization': `Bearer ${access_token}`
                 }
@@ -341,18 +340,18 @@ const AdminManageDepartments = () => {
 
         e.preventDefault();
 
-        const departmentId = formData.id;
-        const departmentName = formData.departmentName;
+        const locationId = formData.id;
+        const locationAddress = formData.locationAddress;
 
-        if ( departmentName !== '' && departmentName !== null ){
+        if ( locationAddress !== '' && locationAddress !== null ){
 
             const formDataDto = new FormData();
 
-            formDataDto.append('departmentName', departmentName);
+            formDataDto.append('locationAddress', locationAddress);
 
             try{
 
-                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateDepartment/${departmentId}`, formDataDto, {
+                const response = await axios.put(`http://localhost:7777/api/v1/accenture-admin/updateLocationById/${locationId}`, formDataDto, {
                     headers: {
                         'Authorization': `Bearer ${access_token}`
                     }
@@ -360,11 +359,11 @@ const AdminManageDepartments = () => {
 
                 if ( response.status === 200 ){
 
-                    toast.success('Project Updated', {
+                    toast.success('Location Updated', {
                         duration: 1000
                     })
 
-                    fetchDepartmentsData();
+                    fetchLocationsData();
 
                     setEditMode(false);
 
@@ -381,31 +380,6 @@ const AdminManageDepartments = () => {
             toast.error(`Fill all fields`, {
                 duration: 2000
             });
-
-        }
-
-    }
-
-    // Function to fetch all departments
-    const fetchDepartmentsData = async () => {
-
-        try{
-
-            const response = await axios.get(`http://localhost:7777/api/v1/accenture-admin/fetchAllDepartments/${page}/${pageSize}`, {
-                headers: {
-                    'Authorization': `Bearer ${access_token}`
-                }
-            })
-
-            if ( response.status === 200 ){
-
-                setDepartmentData(response.data);
-
-            }
-
-        }catch(error){
-
-            handleFetchError(error);
 
         }
 
@@ -438,6 +412,33 @@ const AdminManageDepartments = () => {
 
     }
 
+    // Common function to handle error
+    const handleFetchError = (error) => {
+
+        if ( error.response ) {
+
+            if ( error.response.status === 403 ){
+
+                console.log(error.response);
+
+                toast.error('Something went wrong', {
+                    duration: 2000
+                });
+
+            } else {
+
+                console.log(error);
+
+            }
+
+        } else {
+
+            console.error('Error fetching data', error);
+
+        }
+
+    }
+
     useEffect(() => {
 
         setRoleFunction();
@@ -446,14 +447,14 @@ const AdminManageDepartments = () => {
 
     useEffect(() => {
 
-        fetchDepartmentsData();
+        fetchLocationsData();
 
     }, [page]);
 
     return (
 
         <>
-
+        
             <Toaster />
 
             <Helmet>
@@ -467,7 +468,7 @@ const AdminManageDepartments = () => {
 
                 <>
 
-                    {editMode && (
+                {editMode && (
 
                         <div className="fixed z-50 top-0 bottom-0 left-0 right-0 flex justify-center items-center">
 
@@ -480,19 +481,19 @@ const AdminManageDepartments = () => {
 
                                     <div className="text-xl text-gray-600">
 
-                                        Edit Department
+                                        Edit Location
 
                                     </div>
 
                                     <div className="">
 
-                                        <label className='text-gray-600'> Department name <span className='text-red-500'>*</span> </label><br />
+                                        <label className='text-gray-600'> Location Address <span className='text-red-500'>*</span> </label><br />
 
                                         <input 
                                             type='text'
                                             className='focus:outline-none border-2 focus:border-sky-300 rounded-lg px-3 leading-8 mt-2'
-                                            name='departmentName'
-                                            value={formData.departmentName}
+                                            name='locationAddress'
+                                            value={formData.locationAddress}
                                             onChange={(e) => handleOnChangeFunction2(e)}
                                         />
 
@@ -530,14 +531,14 @@ const AdminManageDepartments = () => {
 
                                 <div className="text-xl tracking-wider">
 
-                                <span className='font-semibold'>Departments</span> | Showing all departments
+                                <span className='font-semibold'>Locations</span> | Showing all locations
 
                                 </div>
 
                                 <div className="flex space-x-5">
 
                                     <div className="inline-flex text-gray-600 border-dotted border-2 border-gray-500 rounded-xl px-2 py-1 items-center space-x-1 hover:opacity-70 transition-all duration-300 active:opacity-40 cursor-pointer my-2"
-                                        onClick={addDepartmentButtonFunction}
+                                        onClick={addLocationButtonFunction}
                                     >
 
                                         <div className="text-xl font-serif"
@@ -551,26 +552,26 @@ const AdminManageDepartments = () => {
 
                                         <div className="text-sm font-serif">
 
-                                            Add Department
+                                            Add Location
 
                                         </div>
 
                                     </div>
 
-                                    {showAddProject && (
+                                    {showAddLocation && (
 
                                         <div className="flex items-center space-x-5">
 
                                             <div className="flex items-center space-x-5 transition-all">
 
-                                                <label  className='text-sm text-gray-600  font-semibold'>Department Name</label> <br />
+                                                <label  className='text-sm text-gray-600  font-semibold'>Location Address</label> <br />
 
                                                 <input 
                                                     type='text'
                                                     className='focus:outline-none focus:border-customBlueLinkPulseBase border-2 rounded-xl px-2 leading-8'
                                                     placeholder='Enter Department Name'
-                                                    name='departmentName'
-                                                    value={departmentDetails.departmentName}
+                                                    name='locationAddress'
+                                                    value={locationDetails.locationAddress}
                                                     onChange={(e) => handleOnChangeFunction(e)}
                                                 />
 
@@ -580,10 +581,10 @@ const AdminManageDepartments = () => {
 
                                                 <button
                                                     className='bg-gray-200 text-gray-600 hover:opacity-80 active:opacity-60 px-3 leading-[32px] rounded-lg text-sm font-semibold'
-                                                    onClick={addDepartmentFunction}
+                                                    onClick={addLocationFunction}
                                                 >
 
-                                                    Add Departments
+                                                    Add Location
 
                                                 </button>
 
@@ -612,7 +613,7 @@ const AdminManageDepartments = () => {
                                             >S.No</th>
                                             <th
                                                 className='px-5'
-                                            >Departments Name</th>
+                                            >Location Address</th>
                                             <th
                                                 className='px-5'
                                             >Created On</th>
@@ -624,7 +625,7 @@ const AdminManageDepartments = () => {
 
                                     </thead>
 
-                                    {departmentData && departmentData.length === 0 && (
+                                    {locationData && locationData.length === 0 && (
 
                                         <tbody>
 
@@ -654,12 +655,12 @@ const AdminManageDepartments = () => {
                                     <tbody>
 
 
-                                        {departmentData && departmentData.length > 0 && (
+                                        {locationData && locationData.length > 0 && (
                                             
-                                            departmentData.map((department, index) => (
+                                            locationData.map((location, index) => (
                                             
                                                 <tr
-                                                    key={department.id}
+                                                    key={location.id}
                                                     className='bg-white leading-[50px] text-gray-700'
                                                 >
                                             
@@ -667,21 +668,21 @@ const AdminManageDepartments = () => {
                                                         className='px-5'
                                                     >{(page * pageSize) + (index + 1)}</td>
 
-                                                    <td className='px-5'>{department.departmentName}</td>
+                                                    <td className='px-5'>{location.locationAddress}</td>
                                             
-                                                    <td className='px-5'>{new Date(department.departmentCreatedOn).toLocaleString()}</td>
+                                                    <td className='px-5'>{new Date(location.locationCreatedOn).toLocaleString()}</td>
                                             
                                                     <td className='px-5 space-x-5 flex items-center'>
                                             
                                                         <span className="mt-2 relative">
                                                             <CiEdit
                                                                 className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                                onMouseEnter={() => enableEditVisible(department.id)}
-                                                                onMouseLeave={() => disableEditVisible(department.id)}
-                                                                onClick={() => editButtonManageDepartment(department.id)}
+                                                                onMouseEnter={() => enableEditVisible(location.id)}
+                                                                onMouseLeave={() => disableEditVisible(location.id)}
+                                                                onClick={() => editButtonManageLocation(location.id)}
                                                             />
                                                             
-                                                            {editButtonVisible[department.id] && (
+                                                            {editButtonVisible[location.id] && (
                                                                 <span className="absolute left-[-30px] top-1 text-xs rounded-md px-1 py-1">
                                                                     Edit
                                                                 </span>
@@ -692,12 +693,12 @@ const AdminManageDepartments = () => {
                                                         <span className="mt-2 relative manageProjects">
                                                             <MdDeleteForever 
                                                                 className='text-[35px] bg-gray-200 rounded-[50%] p-1 cursor-pointer hover:opacity-60 active:opacity-80'
-                                                                onMouseEnter={() => enableDeleteVisible(department.id)}
-                                                                onMouseLeave={() => disableDeleteVisible(department.id)}
-                                                                onClick={() => DepartmentDeleteFunction(department.id)}
+                                                                onMouseEnter={() => enableDeleteVisible(location.id)}
+                                                                onMouseLeave={() => disableDeleteVisible(location.id)}
+                                                                onClick={() => LocationDeleteFunction(location.id)}
                                                             />
 
-                                                            {deleteButtonVisible[department.id] && (
+                                                            {deleteButtonVisible[location.id] && (
                                                                 <span className="absolute right-[-50px] top-1 text-xs rounded-md px-1 py-1">
                                                                     Delete
                                                                 </span>
@@ -716,7 +717,7 @@ const AdminManageDepartments = () => {
 
                                 </table>
 
-                                {departmentData && departmentData.length > 0 && (
+                                {locationData && locationData.length > 0 && (
 
                                     <div className="space-x-5 text-center text-gray-600">
                                         
@@ -748,10 +749,10 @@ const AdminManageDepartments = () => {
 
             )}
 
-        </> 
+        </>
 
     )
 
 }
 
-export default AdminManageDepartments
+export default AdminManageLocation

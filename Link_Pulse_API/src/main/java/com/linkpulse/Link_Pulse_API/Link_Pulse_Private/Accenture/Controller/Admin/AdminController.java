@@ -2,6 +2,7 @@ package com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Controller.Adm
 
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDepartmentNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureDesignationNotFoundException;
+import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureLocationNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Error.AccentureProjectNotFoundException;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Helper.MediaTypeResolver;
 import com.linkpulse.Link_Pulse_API.Link_Pulse_Private.Accenture.Model.Admin.*;
@@ -351,6 +352,65 @@ public class AdminController {
         List<AdminDesignationResponseModel> fetchedDesignations = adminService.fetchDesignationsByDepartmentId(departmentId);
 
         return ResponseEntity.ok(fetchedDesignations);
+
+    }
+
+    // APIs for Locations
+    @GetMapping("/fetchAllLocations/{pageNumber}/{pageSize}")
+    public ResponseEntity<List<AdminLocationsResponseModel>> fetchAllLocations(
+            @PathVariable("pageNumber") int pageNumber,
+            @PathVariable("pageSize") int pageSize
+    ){
+
+        List<AdminLocationsResponseModel> fetchedProjects = adminService.fetchAllLocations(pageNumber, pageSize);
+
+        return ResponseEntity.ok(fetchedProjects);
+
+    }
+
+    @PostMapping("/addLocation")
+    public ResponseEntity<String> addLocation(
+            @RequestParam("locationAddress") String locationAddress
+    ){
+
+        String successMessage = adminService.addLocation(locationAddress);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+    @DeleteMapping("/deleteLocationById/{locationId}")
+    public ResponseEntity<String> deleteLocation(
+            @PathVariable("locationId") Long locationId
+    ){
+
+        String successMessage = adminService.deleteLocationById(locationId);
+
+        return ResponseEntity.ok(successMessage);
+
+    }
+
+
+    @GetMapping("/getLocationById/{locationId}")
+    public ResponseEntity<AdminLocationsResponseModel> getLocationById(
+            @PathVariable("locationId") Long locationId
+    ) throws AccentureLocationNotFoundException {
+
+        AdminLocationsResponseModel fetchedDepartment = adminService.getLocationById(locationId);
+
+        return ResponseEntity.ok(fetchedDepartment);
+
+    }
+
+    @PutMapping("/updateLocationById/{locationId}")
+    public ResponseEntity<String> updateLocationById(
+            @PathVariable("locationId") Long locationId,
+            @RequestParam("locationAddress") String locationAddress
+    ) throws AccentureLocationNotFoundException {
+
+        String successMessage = adminService.updateLocationById(locationId, locationAddress);
+
+        return ResponseEntity.ok(successMessage);
 
     }
 
