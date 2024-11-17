@@ -516,9 +516,9 @@ const AdminEmployeeApproval = () => {
                                         >S.No</th>
                                         <th>Full Name</th>
                                         <th>Email</th>
-                                        <th>Projects</th>
-                                        <th>Roles</th>
                                         <th>Department</th>
+                                        <th>Project</th>
+                                        <th>Role</th>
                                         <th>Designation</th>
                                         <th>Actions</th>
                                     </tr>
@@ -537,6 +537,47 @@ const AdminEmployeeApproval = () => {
                                                 >{(page * pageSize) + (index + 1)}</td>
                                                 <td>{lockedUser.fullName}</td>
                                                 <td>{lockedUser.email}</td>
+                                                <td>
+                                                    <select
+                                                        type="text"
+                                                        className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer focus:border-[0px]"
+                                                        onChange={(e) => {
+
+                                                            const departmentId = e.target.value;
+
+                                                            console.log(departmentId);
+
+                                                            setEmployeeDetails(
+                                                                {
+                                                                    ...employeeDetails, 
+                                                                    departmentId : departmentId,
+                                                                    designationId : 'Select Designation'
+                                                                }
+                                                            );
+
+                                                            fetchDesignations(departmentId);
+
+                                                        }}
+                                                    >
+
+                                                        <option>Select Department</option>
+
+                                                        {departments && departments.length > 0 && departments.map((department) => {
+
+                                                            return (
+
+                                                                <option
+                                                                    key={department.id}
+                                                                    value={department.id}
+                                                                > {department.departmentName} </option>
+
+                                                            );
+
+                                                        })}
+
+                                                    </select>
+                                                </td>
+
                                                 <td>
                                                     
                                                     <select
@@ -583,47 +624,7 @@ const AdminEmployeeApproval = () => {
                                                         
                                                     </select>
                                                 </td>
-                                                <td>
-                                                    <select
-                                                        type="text"
-                                                        className="bg-gray-200 px-2 py-1 rounded-lg cursor-pointer"
-                                                        onChange={(e) => {
-
-                                                            const departmentId = e.target.value;
-
-                                                            console.log(departmentId);
-
-                                                            setEmployeeDetails(
-                                                                {
-                                                                    ...employeeDetails, 
-                                                                    departmentId : departmentId,
-                                                                    designationId : 'Select Designation'
-                                                                }
-                                                            );
-
-                                                            fetchDesignations(departmentId);
-
-                                                        }}
-                                                    >
-
-                                                        <option>Select Department</option>
-
-                                                        {departments && departments.length > 0 && departments.map((department) => {
-
-                                                            return (
-
-                                                                <option
-                                                                    key={department.id}
-                                                                    value={department.id}
-                                                                > {department.departmentName} </option>
-
-                                                            );
-
-                                                        })}
-
-                                                    </select>
-                                                </td>
-
+                                                
                                                 <td>
                                                     <select
                                                         type="text"

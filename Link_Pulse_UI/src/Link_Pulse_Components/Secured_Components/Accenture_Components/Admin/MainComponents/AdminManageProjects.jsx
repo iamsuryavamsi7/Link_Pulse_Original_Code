@@ -696,7 +696,7 @@ const AdminManageProjects = () => {
                                                 <td className='px-5'>{project.projectName}</td>
                                         
                                                 <td
-                                                    className='w-[300px] flex overflow-hidden mb-3'
+                                                    className='w-[300px] flex overflow-hidden'
                                                 >{project.projectDescription}</td>
                                         
                                                 <td className='px-5'>{new Date(project.projectCreatedOn).toLocaleString()}</td>

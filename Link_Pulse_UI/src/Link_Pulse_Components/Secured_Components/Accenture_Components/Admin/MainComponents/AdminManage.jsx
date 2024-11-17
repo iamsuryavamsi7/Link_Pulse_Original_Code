@@ -16,6 +16,9 @@ const AdminManage = () => {
     // State to activate/deactive designation manage page
     const [isDesignationManagePage, setIsDesignationManagePage] = useState(false);
 
+    // State to activate/deactive designation manage page
+    const [isLocationManagePage, setIsLocationsManagePage] = useState(false);
+
     // path name of the current url
     const pathName = window.location.pathname;
 
@@ -48,6 +51,16 @@ const AdminManage = () => {
         }else {
 
             setIsDepartmentManagePage(false);
+
+        }
+
+        if ( pathName ===  `/admin-manage-locations` ){
+
+            setIsLocationsManagePage(true);
+
+        }else {
+
+            setIsLocationsManagePage(false);
 
         }
 
@@ -101,6 +114,23 @@ const AdminManage = () => {
                     MANAGE DESIGNATIONS
 
                     {isDesignationManagePage && (
+
+                        <MdOutlineArrowDropUp 
+                            className='absolute left-[120px] bottom-[-10px] text-customBlueLeftNavBar text-2xl'
+                        />
+
+                    )}
+
+                </div>
+
+                <div 
+                    className="relative py-3 hover:text-customBlueLeftNavBar transition-all cursor-pointer pl-10"
+                    onClick={() => navigate(`/admin-manage-locations`)}
+                >
+
+                    MANAGE LOCATIONS
+
+                    {isLocationManagePage && (
 
                         <MdOutlineArrowDropUp 
                             className='absolute left-[120px] bottom-[-10px] text-customBlueLeftNavBar text-2xl'

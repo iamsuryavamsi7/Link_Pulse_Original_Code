@@ -46,6 +46,6 @@ Before starting, ensure you have the following installed:
 
 1. Clone the repository:
    ```bash
-   git clone https://github.com/iamsuryavamsi7/Link_Pulse_Original_Code.git
+   git clone https://github.com/gokulsrinivasb/LinkPulse.git
    
    cd Link_Pulse_Original_Code/LINK_PULSE_UI
